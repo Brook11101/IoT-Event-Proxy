@@ -1,111 +1,103 @@
 package dataTree;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.List;
+import java.util.ArrayList;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ZNode {
-    private final String name;
-    private Object data;
-    private int version;
-    private final Map<String, ZNode> children;
+    private volatile Object data;
+    //对于任何一个节点的子节点map来说，这是一个一维的结构
+    private final ConcurrentHashMap<String, ZNode> children;
     private final ZNode parent;
     private final AccessControlList acl;
     private final ReentrantReadWriteLock lock;
+    private final StatPersisted stat;
 
-    public ZNode(String name, Object data, ZNode parent) {
-        this.name = name;
+    //创建一个节点的时候必须指派其父亲节点
+    public ZNode(Object data, ZNode parent, StatPersisted stat) {
         this.data = data;
-        this.version = 0;
-        this.children = new HashMap<>();
+        this.children = new ConcurrentHashMap<>();
         this.parent = parent;
         this.acl = new AccessControlList();
+        //每一个节点有自己的lock
         this.lock = new ReentrantReadWriteLock();
+        this.stat = stat;
     }
 
-    public void setData(String principal, Object data) {
+    // 添加子节点
+    public void addChild(String childName, Object childData, String principal, StatPersisted stat) {
         lock.writeLock().lock();
         try {
-            if (this.acl.hasPermission(principal, Permission.WRITE)) {
-                this.data = data;
-                this.version++;
-                System.out.println("New data has been set");
-            } else {
+            if (!this.acl.hasPermission(principal, Permission.WRITE)) {
                 throw new SecurityException("No write permission for principal: " + principal);
             }
+            ZNode child = new ZNode(childData, this, stat);
+            //map里面的键值存的是child name
+            //父子节点的路径也是用 / 的树状
+            this.children.put(childName, child);
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    public Object getData(String principal) {
-        lock.readLock().lock();
-        try {
-            if (this.acl.hasPermission(principal, Permission.READ)) {
-                return data;
-            } else {
-                throw new SecurityException("No read permission for principal: " + principal);
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    public void addChild(String childName, Object childData, String principal) {
+    // 移除子节点
+    public void removeChild(String childName, String principal) {
         lock.writeLock().lock();
         try {
-            if (this.acl.hasPermission(principal, Permission.WRITE)) {
-                ZNode childNode = new ZNode(childName, childData, this);
-                this.children.put(childName, childNode);
-            } else {
-                throw new SecurityException("No write permission for principal: " + principal);
+            if (!this.acl.hasPermission(principal, Permission.DELETE)) {
+                throw new SecurityException("No delete permission for principal: " + principal);
             }
+            this.children.remove(childName);
         } finally {
             lock.writeLock().unlock();
-        }
-    }
-
-    public ZNode getChild(String childName, String principal) {
-        lock.readLock().lock();
-        try {
-            if (this.acl.hasPermission(principal, Permission.READ)) {
-                return children.get(childName);
-            } else {
-                throw new SecurityException("No read permission for principal: " + principal);
-            }
-        } finally {
-            lock.readLock().unlock();
         }
     }
 
     // Getters and Setters
-    public String getName() {
-        return name;
+    public Object getData() {
+        lock.readLock().lock();
+        try { return data; }
+        finally { lock.readLock().unlock(); }
     }
 
-    public int getVersion() {
-        lock.readLock().lock();
+    public void setData(Object data, String principal) {
+        lock.writeLock().lock();
         try {
-            return version;
+            // 权限检查
+            if (!this.acl.hasPermission(principal, Permission.WRITE)) {
+                throw new SecurityException("No write permission for principal: " + principal);
+            }
+
+            // 设置数据
+            this.data = data;
+
+            // 更新StatPersisted实例
+            long currentTime = System.currentTimeMillis();
+            this.stat.setMtime(currentTime);
+            this.stat.setDataVersion(this.stat.getDataVersion() + 1); // 假设数据版本号每次增加1
+
         } finally {
-            lock.readLock().unlock();
+            lock.writeLock().unlock();
         }
+    }
+
+    public ConcurrentHashMap<String, ZNode> getChildren() {
+        return children;
+    }
+
+    public ZNode getParent() {
+        return parent;
     }
 
     public AccessControlList getAcl() {
         return acl;
     }
 
-    public void removeChild(String childName, String principal) {
-        lock.writeLock().lock();
-        try {
-            if (this.acl.hasPermission(principal, Permission.DELETE)) {
-                this.children.remove(childName);
-            } else {
-                throw new SecurityException("No delete permission for principal: " + principal);
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+    public StatPersisted getStat() {
+        return stat;
     }
 }
+

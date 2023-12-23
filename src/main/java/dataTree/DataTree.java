@@ -10,54 +10,58 @@ public class DataTree {
     private final ReentrantReadWriteLock lock;
 
     public DataTree() {
-        this.root = new ZNode("root", null, null);
+        long currentTime = System.currentTimeMillis();
+        //创建根节点，生成根节点的信息
+        StatPersisted rootStat = new StatPersisted(0, 0, currentTime, currentTime, 0, 0, "anyone");
+        this.root = new ZNode(null, null, rootStat);
         this.listeners = new ArrayList<>();
         this.lock = new ReentrantReadWriteLock();
     }
 
-    public void addNode(String path, Object data, String principal) {
+    // 添加节点方法
+    public void addNode(String path, Object data, String principal, StatPersisted stat) {
+        //一棵树上的所有节点共用了一把锁
         lock.writeLock().lock();
         try {
             String[] parts = path.split("/");
             ZNode current = root;
 
-            for (String part : parts) {
-                if (part.isEmpty()) continue;
-                //这里就是沿着path一条一条往下过
-                ZNode child = current.getChild(part, principal);
+            for (int i = 1; i < parts.length; i++) {
+                if (parts[i].isEmpty()) continue;
+                ZNode child = current.getChildren().get(parts[i]);
                 if (child == null) {
-                    current.addChild(part, null, principal);  // 添加子节点
-                    child = current.getChild(part, principal); // 获取新创建的子节点
-
-                    // 为新节点设置权限
-                    if (child != null) {
-                        child.getAcl().addPermission(principal, Permission.WRITE);
-                        child.getAcl().addPermission(principal, Permission.READ);
-                        // 这里可能还需要添加其他用户的权限
+                    if (!current.getAcl().hasPermission(principal, Permission.WRITE)) {
+                        throw new SecurityException("No write permission for principal: " + principal);
                     }
+
+                    child = new ZNode(data, current, stat);
+                    current.addChild(parts[i], data, principal, stat);
                 }
                 current = child;
             }
+            //这里增加了一项设置，认为创建这个节点的线程默认拥有这个节点的所有权限
+            current.getAcl().addPermission(principal,Permission.WRITE);
+            current.getAcl().addPermission(principal,Permission.READ);
 
-            if (current != null) {
-                current.setData(principal, data); // 设置数据
-                notifyListeners(new DataChangeEvent(current));
-            }
+            current.setData(data,principal);
+            notifyListeners(new DataChangeEvent(current));
         } finally {
             lock.writeLock().unlock();
         }
     }
 
 
-    public ZNode findNode(String path, String principal) {
+
+    // 查找节点方法
+    public ZNode findNode(String path) {
         lock.readLock().lock();
         try {
             String[] parts = path.split("/");
             ZNode current = root;
 
-            for (String part : parts) {
-                if (part.isEmpty()) continue;
-                current = current.getChild(part, principal);
+            for (int i = 1; i < parts.length; i++) {
+                if (parts[i].isEmpty()) continue;
+                current = current.getChildren().get(parts[i]);
                 if (current == null) {
                     return null;
                 }
@@ -69,25 +73,16 @@ public class DataTree {
         }
     }
 
-    public void addListener(ZNodeListener listener) {
-        lock.writeLock().lock();
-        try {
-            this.listeners.add(listener);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
+    // 删除节点方法，欠缺监听器的实现
     public void removeNode(String path, String principal) {
         lock.writeLock().lock();
         try {
             String[] parts = path.split("/");
             ZNode current = root;
 
-            for (int i = 0; i < parts.length - 1; i++) {
-                String part = parts[i];
-                if (part.isEmpty()) continue;
-                current = current.getChild(part, principal);
+            for (int i = 1; i < parts.length - 1; i++) {
+                if (parts[i].isEmpty()) continue;
+                current = current.getChildren().get(parts[i]);
                 if (current == null) {
                     throw new IllegalArgumentException("Path does not exist: " + path);
                 }
@@ -100,6 +95,17 @@ public class DataTree {
         }
     }
 
+    // 添加事件监听器方法
+    public void addListener(ZNodeListener listener) {
+        lock.writeLock().lock();
+        try {
+            this.listeners.add(listener);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    // 通知事件监听器
     protected void notifyListeners(DataChangeEvent event) {
         lock.readLock().lock();
         try {

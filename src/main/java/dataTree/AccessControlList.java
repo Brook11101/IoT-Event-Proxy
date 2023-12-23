@@ -1,35 +1,35 @@
 package dataTree;
 
-import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
+import java.util.Collections;
 
 public class AccessControlList {
-    private final Map<String, Set<Permission>> acl;
+    private final ConcurrentHashMap<String, Set<Permission>> acl;
 
     public AccessControlList() {
-        this.acl = new HashMap<>();
+        this.acl = new ConcurrentHashMap<>();
     }
 
-    public synchronized void addPermission(String principal, Permission permission) {
-        //这里的写法是如果没有就创建一个新的Set
-        acl.computeIfAbsent(principal, k -> new HashSet<>()).add(permission);
+    public void addPermission(String principal, Permission permission) {
+        acl.computeIfAbsent(principal, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(permission);
     }
 
-    public synchronized void removePermission(String principal, Permission permission) {
-        if (acl.containsKey(principal)) {
-            acl.get(principal).remove(permission);
-            if (acl.get(principal).isEmpty()) {
-                acl.remove(principal); // 移除空的权限集合
+    public void removePermission(String principal, Permission permission) {
+        Set<Permission> perms = acl.get(principal);
+        if (perms != null) {
+            perms.remove(permission);
+            if (perms.isEmpty()) {
+                acl.remove(principal);
             }
         }
     }
 
-    public synchronized Set<Permission> getPermissions(String principal) {
+    public Set<Permission> getPermissions(String principal) {
         return acl.getOrDefault(principal, Collections.emptySet());
     }
 
-    public synchronized boolean hasPermission(String principal, Permission permission) {
+    public boolean hasPermission(String principal, Permission permission) {
         return acl.containsKey(principal) && acl.get(principal).contains(permission);
     }
-
-    // 其他方法，例如移除权限等
 }
