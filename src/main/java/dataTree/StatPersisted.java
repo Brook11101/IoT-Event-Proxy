@@ -13,18 +13,15 @@ public class StatPersisted {
     private volatile int dataVersion;
     //节点access control list版本
     private volatile int aclVersion;
-    //节点拥有者
-    private volatile String nodeOwner;
 
     // 构造函数
-    public StatPersisted(long cnid, long mnid, long ctime, long mtime, int dataVersion, int aclVersion, String nodeOwner) {
+    public StatPersisted(long cnid, long mnid, long ctime, long mtime, int dataVersion, int aclVersion) {
         this.cnid = cnid;
         this.mnid = mnid;
         this.ctime = ctime;
         this.mtime = mtime;
         this.dataVersion = dataVersion;
         this.aclVersion = aclVersion;
-        this.nodeOwner = nodeOwner;
     }
 
     // Getters and Setters
@@ -46,6 +43,15 @@ public class StatPersisted {
     public int getAclVersion() { return aclVersion; }
     public void setAclVersion(int aclVersion) { this.aclVersion = aclVersion; }
 
-    public String getNodeOwner() { return nodeOwner; }
-    public void setNodeOwner(String nodeOwner) { this.nodeOwner = nodeOwner; }
+    @Override
+    public String toString() {
+        return "StatPersisted{" +
+                "cnid=" + cnid +
+                ", mnid=" + mnid +
+                ", ctime=" + ctime +
+                ", mtime=" + mtime +
+                ", dataVersion=" + dataVersion +
+                ", aclVersion=" + aclVersion +
+                '}';
+    }
 }

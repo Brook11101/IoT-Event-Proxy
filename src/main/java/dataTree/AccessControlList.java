@@ -1,5 +1,6 @@
 package dataTree;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
 import java.util.Collections;
@@ -31,5 +32,17 @@ public class AccessControlList {
 
     public boolean hasPermission(String principal, Permission permission) {
         return acl.containsKey(principal) && acl.get(principal).contains(permission);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("AccessControlList{ ");
+        for (Map.Entry<String, Set<Permission>> entry : acl.entrySet()) {
+            sb.append("  ").append(entry.getKey()).append(": ");
+            sb.append(entry.getValue().toString()).append("");
+        }
+        sb.append(" }");
+        return sb.toString();
     }
 }

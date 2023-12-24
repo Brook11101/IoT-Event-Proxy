@@ -1,13 +1,13 @@
 package dataTree;
 
 public class DataChangeEvent {
-    private final ZNode node;
+    private final DataNode node;
 
-    public DataChangeEvent(ZNode node) {
+    public DataChangeEvent(DataNode node) {
         this.node = node;
     }
 
-    public ZNode getNode() {
+    public DataNode getNode() {
         return node;
     }
 }
