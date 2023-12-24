@@ -1,6 +1,6 @@
 package dataTree;
 
 public interface DataNodeListener {
-    void onDataChanged(DataNode node);
+    boolean isInterestedIn(EventType eventType);
+    void onDataChanged(DataNode node, EventType eventType);
 }
-

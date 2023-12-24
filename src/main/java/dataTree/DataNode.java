@@ -2,6 +2,7 @@ package dataTree;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.StampedLock;
 
 public class DataNode {
     //节点父亲
@@ -14,8 +15,8 @@ public class DataNode {
     private final ConcurrentHashMap<String, DataNode> children;
     //节点访问控制列表
     private final AccessControlList acl;
-    //节点访问并发控制
-    private final ReentrantReadWriteLock lock;
+    //节点访问并发控制，使用乐观锁进行读写优化（带stamp 先读再校验策略）
+    private final StampedLock lock = new StampedLock();
 
     //创建一个节点的时候必须指派其父亲节点
     public DataNode(DataNode parent, Object data, StatPersisted stat) {
@@ -24,32 +25,33 @@ public class DataNode {
         this.stat = stat;
         this.children = new ConcurrentHashMap<>();
         this.acl = new AccessControlList();
-        this.lock = new ReentrantReadWriteLock();
     }
 
     // 添加子节点
-    public void addChild(String parentPrincipal, String childName, DataNode child) {
-        lock.writeLock().lock();
+    public boolean addChild(String parentPrincipal, String childName, DataNode child) {
+        long stamp = lock.writeLock();
         try {
-            if (!this.acl.hasPermission(parentPrincipal, Permission.WRITE)) {
-                throw new SecurityException("No user write permission to create child of this node: " + parentPrincipal);
+            if (this.acl.hasPermission(parentPrincipal, Permission.WRITE) && !children.containsKey(childName)) {
+                children.put(childName, child);
+                return true;
             }
-            this.children.put(childName, child);
+            return false;
         } finally {
-            lock.writeLock().unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
     // 移除子节点
-    public void removeChild(String parentPrincipal, String childName) {
-        lock.writeLock().lock();
+    public boolean removeChild(String parentPrincipal, String childName) {
+        long stamp = lock.writeLock();
         try {
-            if (!this.acl.hasPermission(parentPrincipal, Permission.DELETE)) {
-                throw new SecurityException("No user remove permission to delete child of this node: " + parentPrincipal);
+            if (this.acl.hasPermission(parentPrincipal, Permission.DELETE) && children.containsKey(childName)) {
+                children.remove(childName);
+                return true;
             }
-            this.children.remove(childName);
+            return false;
         } finally {
-            lock.writeLock().unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -58,28 +60,32 @@ public class DataNode {
     }
 
     public Object getData() {
-        lock.readLock().lock();
-        try {
-            return data;
-        } finally {
-            lock.readLock().unlock();
+        long stamp = lock.tryOptimisticRead();
+        Object currentData = data;
+        if (!lock.validate(stamp)) {
+            stamp = lock.readLock();
+            try {
+                currentData = data;
+            } finally {
+                lock.unlockRead(stamp);
+            }
         }
+        // 这里可以被实现浅拷贝，将值复制给一个对象返回，而不是直接返回私有对象的引用，从而保证线程安全。
+        return currentData;
     }
 
-    public void setData(String currentPrincipal, Object data, StatPersisted currentStat) {
-        lock.writeLock().lock();
+    public boolean setData(String currentPrincipal, Object newData, StatPersisted currentStat) {
+        long stamp = lock.writeLock();
         try {
-            // 权限检查
-            if (!this.acl.hasPermission(currentPrincipal, Permission.WRITE)) {
+            if (this.acl.hasPermission(currentPrincipal, Permission.WRITE)) {
+                this.data = newData;
+                this.stat = currentStat;
+                return true;
+            } else {
                 throw new SecurityException("No user write permission to change data of this node: " + currentPrincipal);
             }
-            // 设置数据
-            this.data = data;
-            // 更新StatPersisted实例
-            this.stat = currentStat;
-
         } finally {
-            lock.writeLock().unlock();
+            lock.unlockWrite(stamp);
         }
     }
 
