@@ -1,17 +1,16 @@
 package dataTree;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.StampedLock;
 
 public class DataTree {
     private final DataNode root;
     private final ConcurrentHashMap<String, DataNode> pathMap;
     private final StampedLock lock;
-    private final WatcherManager watcherManager;
+    private final WatcherManager dataWatches;
+    private final WatcherManager childWatches;
 
     public DataTree() {
         //创建根节点，生成根节点的信息
@@ -21,7 +20,8 @@ public class DataTree {
         this.pathMap = new ConcurrentHashMap<>();
         this.pathMap.put("/", root);
         this.lock = new StampedLock();
-        this.watcherManager = new WatcherManager();
+        this.dataWatches = new WatcherManager();
+        this.childWatches = new WatcherManager();
     }
 
     //为树结构添加节点
@@ -31,7 +31,7 @@ public class DataTree {
             // 按照分隔符沿树干遍历
             String[] parts = nodePath.split("/");
             DataNode current = root;
-
+            boolean isNewNodeCreated = false;
             for (int i = 1; i < parts.length; i++) {
                 if (parts[i].isEmpty()) continue;
                 DataNode child = current.getChildren().get(parts[i]);
@@ -48,10 +48,18 @@ public class DataTree {
                     child.getAcl().addPermission(parentPrincipal, Permission.DELETE);
                     // 设置数据
                     child.setData(parentPrincipal, nodeData, nodeStat);
-                    // 使用 WatcherManager 通知监听者
-                    watcherManager.notifyWatchers(nodePath, EventType.NODE_CREATED);
+                    isNewNodeCreated = true;
                 }
                 current = child;
+            }
+            if (isNewNodeCreated) {
+                // 触发新节点上的数据变化Watcher
+                dataWatches.triggerWatchers(nodePath, EventType.NODE_CREATED);
+
+                // 触发父节点的子节点列表变化Watcher
+                String parentPath = nodePath.substring(0, nodePath.lastIndexOf('/'));
+                parentPath = parentPath.isEmpty() ? "/" : parentPath;
+                childWatches.triggerWatchers(parentPath, EventType.NODE_CHILDREN_CHANGED);
             }
             return current;
         } finally {
@@ -81,7 +89,9 @@ public class DataTree {
             // 找到节点后的处理逻辑...
             boolean isDataModified = node.setData(parentPrincipal, nodeData, nodeStat);
             if (isDataModified) {
-                watcherManager.notifyWatchers(nodePath, EventType.NODE_DATA_CHANGED);
+                //修改节点只需要触发数据watches的变化就行
+                // 触发节点数据变化的Watcher
+                dataWatches.triggerWatchers(nodePath, EventType.NODE_DATA_CHANGED);
             }
             return isDataModified;
         } finally {
@@ -159,7 +169,14 @@ public class DataTree {
             boolean removed = parent.removeChild(parentPrincipal, childName);
             if (removed) {
                 pathMap.remove(nodePath); // 更新路径映射
-                watcherManager.notifyWatchers(nodePath, EventType.NODE_DELETED);
+
+                // 触发节点删除的Watcher
+                dataWatches.triggerWatchers(nodePath, EventType.NODE_DELETED);
+
+                // 触发父节点子节点列表变化的Watcher
+                String parentPath = nodePath.substring(0, nodePath.lastIndexOf('/'));
+                parentPath = parentPath.isEmpty() ? "/" : parentPath;
+                childWatches.triggerWatchers(parentPath, EventType.NODE_CHILDREN_CHANGED);
             }
             return removed;
         } finally {
@@ -167,18 +184,30 @@ public class DataTree {
         }
     }
 
-    public void addWatcher(String path, Watcher watcher) {
-        watcherManager.addWatcher(path, watcher);
+
+    public void watchData(String path, Watcher watcher) {
+        if (watcher != null && pathMap.containsKey(path)) {
+            dataWatches.addWatcher(path, watcher);
+        }
     }
 
-    public void removeWatcher(String path, Watcher watcher) {
-        watcherManager.removeWatcher(path, watcher);
+    public void watchChildren(String path, Watcher watcher) {
+        if (watcher != null && pathMap.containsKey(path)) {
+            childWatches.addWatcher(path, watcher);
+        }
     }
 
-    public boolean containsWatch(String path, Watcher watcher) {
-        return watcherManager.containsWatcher(path, watcher);
+    public void watchDataRemove(String path, Watcher watcher) {
+        if (watcher != null && pathMap.containsKey(path)) {
+            dataWatches.removeWatcher(path, watcher);
+        }
     }
 
+    public void watchChildrenRemove(String path, Watcher watcher) {
+        if (watcher != null && pathMap.containsKey(path)) {
+            childWatches.removeWatcher(path, watcher);
+        }
+    }
 
     private void updatePathMap(String path, DataNode node, boolean remove) {
         if (remove) {
@@ -202,11 +231,12 @@ public class DataTree {
         }
 
         // 获取与节点相关的Watcher信息
-        String watcherInfo = getWatchersInfo(path, indent.toString());
+        String dataWatcherInfo = getWatchersInfo(path, indent.toString(), dataWatches);
+        String childWatcherInfo = getWatchersInfo(path, indent.toString(), childWatches);
 
         System.out.println(indent + (level > 0 ? "- " : "") + "Path: " + path +
                 ", Data: " + node.getData() + ", Permissions: " + node.getAcl() +
-                ", Stat: " + node.getStat() + watcherInfo);
+                ", Stat: " + node.getStat() + dataWatcherInfo + childWatcherInfo);
 
         for (Map.Entry<String, DataNode> entry : node.getChildren().entrySet()) {
             String childPath = path.equals("/") ? path + entry.getKey() : path + "/" + entry.getKey();
@@ -214,13 +244,13 @@ public class DataTree {
         }
     }
 
-    private String getWatchersInfo(String path, String indent) {
+    private String getWatchersInfo(String path, String indent, WatcherManager watcherManager) {
         List<Watcher> watchers = watcherManager.getWatchers(path);
         if (watchers != null && !watchers.isEmpty()) {
             StringBuilder watchersInfo = new StringBuilder();
             watchersInfo.append(indent).append(" Watchers: [");
             for (Watcher watcher : watchers) {
-                watchersInfo.append(watcher.getType()).append(", ");
+                watchersInfo.append(watcher.getEventType()).append(", ");
             }
             watchersInfo.setLength(watchersInfo.length() - 2); // 移除最后的逗号和空格
             watchersInfo.append("]");
