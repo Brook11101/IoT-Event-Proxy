@@ -48,11 +48,11 @@ public class WatcherManager {
         return watchTable.containsKey(path) && watchTable.get(path).contains(watcher);
     }
 
-    public void triggerWatchers(String path, EventType eventType) {
+    public void triggerWatchers(String path, EventType eventType, DataNode node) {
         List<Watcher> pathWatchers = watchTable.get(path);
         if (pathWatchers != null) {
             for (Watcher watcher : pathWatchers) {
-                watcher.onEvent(eventType);
+                watcher.onEvent(eventType, node);
                 //这里暂时不对Watchers作一次性处理
                 //removeWatcher(path, watcher);
             }

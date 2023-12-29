@@ -3,12 +3,12 @@ package dataTree;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.StampedLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DataTree {
     private final DataNode root;
     private final ConcurrentHashMap<String, DataNode> pathMap;
-    private final StampedLock lock;
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final WatcherManager dataWatches;
     private final WatcherManager childWatches;
 
@@ -19,14 +19,13 @@ public class DataTree {
         this.root = new DataNode(null, "root", rootStat);
         this.pathMap = new ConcurrentHashMap<>();
         this.pathMap.put("/", root);
-        this.lock = new StampedLock();
         this.dataWatches = new WatcherManager();
         this.childWatches = new WatcherManager();
     }
 
     //为树结构添加节点
     public DataNode addNode(String parentPrincipal, String nodePath, Object nodeData, StatPersisted nodeStat) {
-        long stamp = lock.writeLock();
+        rwLock.writeLock().lock();
         try {
             // 按照分隔符沿树干遍历
             String[] parts = nodePath.split("/");
@@ -54,23 +53,23 @@ public class DataTree {
             }
             if (isNewNodeCreated) {
                 // 触发新节点上的数据变化Watcher
-                dataWatches.triggerWatchers(nodePath, EventType.NODE_CREATED);
+                dataWatches.triggerWatchers(nodePath, EventType.NODE_CREATED, current);
 
                 // 触发父节点的子节点列表变化Watcher
                 String parentPath = nodePath.substring(0, nodePath.lastIndexOf('/'));
                 parentPath = parentPath.isEmpty() ? "/" : parentPath;
-                childWatches.triggerWatchers(parentPath, EventType.NODE_CHILDREN_CHANGED);
+                childWatches.triggerWatchers(parentPath, EventType.NODE_CHILDREN_CHANGED, current);
             }
             return current;
         } finally {
-            lock.unlockWrite(stamp);
+            rwLock.writeLock().unlock();
         }
     }
 
 
     //修改节点方法
     public boolean modifyNode(String parentPrincipal, String nodePath, Object nodeData, StatPersisted nodeStat) {
-        long stamp = lock.writeLock();
+        rwLock.writeLock().lock();
         try {
             DataNode node = pathMap.get(nodePath);
             if (node == null) {
@@ -91,53 +90,56 @@ public class DataTree {
             if (isDataModified) {
                 //修改节点只需要触发数据watches的变化就行
                 // 触发节点数据变化的Watcher
-                dataWatches.triggerWatchers(nodePath, EventType.NODE_DATA_CHANGED);
+                dataWatches.triggerWatchers(nodePath, EventType.NODE_DATA_CHANGED, node);
             }
             return isDataModified;
         } finally {
-            lock.unlockWrite(stamp);
+            rwLock.writeLock().unlock();
         }
     }
 
 
     // 查找节点方法
     public DataNode findNode(String nodePath) {
-        long stamp = lock.tryOptimisticRead();
-        try {
-            DataNode node = pathMap.get(nodePath);
-            if (node != null) {
-                return node; // 从pathMap直接找到节点
-            }
+        // 首先检查当前线程是否已经持有写锁
+        if (rwLock.isWriteLockedByCurrentThread()) {
+            return getNodeWithoutLock(nodePath);
+        }
 
-            // 如果在pathMap中找不到，执行逐级查找
-            String[] parts = nodePath.split("/");
-            node = root;
-            for (int i = 1; i < parts.length; i++) {
-                if (parts[i].isEmpty()) continue;
-                node = node.getChildren().get(parts[i]);
-                if (node == null) {
-                    return null; // 节点路径不存在
-                }
-            }
-            // 将找到的节点加入pathMap，以便下次直接查找
-            pathMap.putIfAbsent(nodePath, node);
-            return node;
+        rwLock.readLock().lock();
+        try {
+            return getNodeWithoutLock(nodePath);
         } finally {
-            if (!lock.validate(stamp)) {
-                stamp = lock.readLock();
-                try {
-                    return pathMap.get(nodePath); // 再次尝试从pathMap获取
-                } finally {
-                    lock.unlockRead(stamp);
-                }
+            rwLock.readLock().unlock();
+        }
+    }
+
+    private DataNode getNodeWithoutLock(String nodePath) {
+        DataNode node = pathMap.get(nodePath);
+        if (node != null) {
+            return node; // 从pathMap直接找到节点
+        }
+
+        // 如果在pathMap中找不到，执行逐级查找
+        String[] parts = nodePath.split("/");
+        node = root;
+        for (int i = 1; i < parts.length; i++) {
+            if (parts[i].isEmpty()) continue;
+            node = node.getChildren().get(parts[i]);
+            if (node == null) {
+                return null; // 节点路径不存在
             }
         }
+
+        // 将找到的节点加入pathMap，以便下次直接查找
+        pathMap.putIfAbsent(nodePath, node);
+        return node;
     }
 
 
     // 删除节点方法，欠缺监听器的实现
     public boolean removeNode(String parentPrincipal, String nodePath) {
-        long stamp = lock.writeLock();
+        rwLock.writeLock().lock();
         try {
             if (nodePath.equals("/")) {
                 throw new IllegalArgumentException("Cannot remove the root node.");
@@ -171,16 +173,16 @@ public class DataTree {
                 pathMap.remove(nodePath); // 更新路径映射
 
                 // 触发节点删除的Watcher
-                dataWatches.triggerWatchers(nodePath, EventType.NODE_DELETED);
+                dataWatches.triggerWatchers(nodePath, EventType.NODE_DELETED, null);
 
                 // 触发父节点子节点列表变化的Watcher
                 String parentPath = nodePath.substring(0, nodePath.lastIndexOf('/'));
                 parentPath = parentPath.isEmpty() ? "/" : parentPath;
-                childWatches.triggerWatchers(parentPath, EventType.NODE_CHILDREN_CHANGED);
+                childWatches.triggerWatchers(parentPath, EventType.NODE_CHILDREN_CHANGED, null);
             }
             return removed;
         } finally {
-            lock.unlockWrite(stamp);
+            rwLock.writeLock().unlock();
         }
     }
 

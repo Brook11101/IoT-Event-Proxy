@@ -15,8 +15,8 @@ public class DataNode {
     private final ConcurrentHashMap<String, DataNode> children;
     //节点访问控制列表
     private final AccessControlList acl;
-    //节点访问并发控制，使用乐观锁进行读写优化（带stamp 先读再校验策略）
-    private final StampedLock lock = new StampedLock();
+    //节点访问并发控制，这里使用可重入锁，便于减少多线程时死锁
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     //创建一个节点的时候必须指派其父亲节点
     public DataNode(DataNode parent, Object data, StatPersisted stat) {
@@ -29,7 +29,7 @@ public class DataNode {
 
     // 添加子节点
     public boolean addChild(String parentPrincipal, String childName, DataNode child) {
-        long stamp = lock.writeLock();
+        rwLock.writeLock().lock();
         try {
             if (this.acl.hasPermission(parentPrincipal, Permission.WRITE) && !children.containsKey(childName)) {
                 children.put(childName, child);
@@ -37,13 +37,13 @@ public class DataNode {
             }
             return false;
         } finally {
-            lock.unlockWrite(stamp);
+            rwLock.writeLock().unlock();
         }
     }
 
     // 移除子节点
     public boolean removeChild(String parentPrincipal, String childName) {
-        long stamp = lock.writeLock();
+        rwLock.writeLock().lock();
         try {
             if (this.acl.hasPermission(parentPrincipal, Permission.DELETE) && children.containsKey(childName)) {
                 children.remove(childName);
@@ -51,7 +51,7 @@ public class DataNode {
             }
             return false;
         } finally {
-            lock.unlockWrite(stamp);
+            rwLock.writeLock().lock();
         }
     }
 
@@ -60,22 +60,22 @@ public class DataNode {
     }
 
     public Object getData() {
-        long stamp = lock.tryOptimisticRead();
-        Object currentData = data;
-        if (!lock.validate(stamp)) {
-            stamp = lock.readLock();
-            try {
-                currentData = data;
-            } finally {
-                lock.unlockRead(stamp);
-            }
+        // 如果当前线程已经持有写锁，则直接返回数据，避免获取读锁
+        if (rwLock.isWriteLockedByCurrentThread()) {
+            return data;
         }
-        // 这里可以被实现浅拷贝，将值复制给一个对象返回，而不是直接返回私有对象的引用，从而保证线程安全。
-        return currentData;
+
+        rwLock.readLock().lock();
+        try {
+            return data;
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
+
     public boolean setData(String currentPrincipal, Object newData, StatPersisted currentStat) {
-        long stamp = lock.writeLock();
+        rwLock.writeLock().lock();
         try {
             if (this.acl.hasPermission(currentPrincipal, Permission.WRITE)) {
                 this.data = newData;
@@ -85,7 +85,7 @@ public class DataNode {
                 throw new SecurityException("No user write permission to change data of this node: " + currentPrincipal);
             }
         } finally {
-            lock.unlockWrite(stamp);
+            rwLock.writeLock().unlock();
         }
     }
 

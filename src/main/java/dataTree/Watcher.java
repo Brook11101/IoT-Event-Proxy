@@ -18,23 +18,23 @@ public class Watcher {
     }
 
     // 处理特定事件的方法
-    public void onEvent(EventType eventType) {
+    public void onEvent(EventType eventType, DataNode node) {
         if (this.eventType != eventType) {
             return; // 如果事件类型不匹配，则不处理
         }
 
         switch (eventType) {
             case NODE_CREATED:
-                handleNodeCreated();
+                handleNodeCreated(node);
                 break;
             case NODE_DATA_CHANGED:
-                handleNodeDataChanged();
+                handleNodeDataChanged(node);
                 break;
             case NODE_DELETED:
                 handleNodeDeleted();
                 break;
             case NODE_CHILDREN_CHANGED:
-                handleNodeChildrenChanged();
+                handleNodeChildrenChanged(node);
                 break;
             default:
                 System.out.println("Unhandled event type: " + eventType);
@@ -43,19 +43,22 @@ public class Watcher {
     }
 
     // 以下是具体的事件处理方法，这里可以根据需要实现逻辑
-    private void handleNodeCreated() {
-        System.out.println("Watcher '" + describe + "' notified of node creation.");
+    private void handleNodeCreated(DataNode node) {
+        System.out.println("Watcher '" + describe + "' notified of node creation.  Node Data: " + node.getData());
     }
 
-    private void handleNodeDataChanged() {
-        System.out.println("Watcher '" + describe + "' notified of node data change.");
+    private void handleNodeDataChanged(DataNode node) {
+        System.out.println("Watcher '" + describe + "' notified of node data change.   Node Data: " + node.getData());
     }
 
     private void handleNodeDeleted() {
         System.out.println("Watcher '" + describe + "' notified of node deletion.");
     }
 
-    private void handleNodeChildrenChanged() {
-        System.out.println("Watcher '" + describe + "' notified of children change.");
+    private void handleNodeChildrenChanged(DataNode node) {
+        if (node == null) {
+            System.out.println("Watcher '" + describe + "' notified of children change. Delete Child Node");
+        } else
+            System.out.println("Watcher '" + describe + "' notified of children change.  Child Node Data: " + node.getData());
     }
 }

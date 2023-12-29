@@ -36,8 +36,11 @@ public class Main {
             tree.watchChildren("/node1", nodeChildrenModificationWatcher);
             tree.addNode(admin, "/node1/node2", "Node 2 Data", stat);
             tree.addNode(admin, "/node3", "Node 3 Data", stat);
+            tree.watchChildren("/node3", nodeChildrenModificationWatcher);
+            tree.watchData("/node1/node2",nodeDeletionWatcher);
             tree.addNode(admin, "/node3/node4", "Node 4 Data", stat);
             tree.removeNode(admin, "/node1/node2");
+            tree.modifyNode(admin,"/","new root",stat);
 
             tree.printTree();
 
