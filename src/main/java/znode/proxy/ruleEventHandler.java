@@ -1,4 +1,4 @@
-package proxy;
+package znode.proxy;
 
 public class ruleEventHandler {
 

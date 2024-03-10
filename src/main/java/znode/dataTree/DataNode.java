@@ -1,8 +1,7 @@
-package dataTree;
+package znode.dataTree;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.StampedLock;
 
 public class DataNode {
     //节点父亲

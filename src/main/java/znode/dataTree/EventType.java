@@ -1,4 +1,4 @@
-package dataTree;
+package znode.dataTree;
 
 public enum EventType {
     NODE_CREATED,
