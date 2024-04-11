@@ -1,4 +1,4 @@
-package proxy;
+package znode.proxy;
 
 import java.util.*;
 

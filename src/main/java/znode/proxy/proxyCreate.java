@@ -1,4 +1,4 @@
-package proxy;
+package znode.proxy;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -145,7 +145,7 @@ public class proxyCreate {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        proxyCreate pc = new proxyCreate("./src/main/java/file/IoTEvent.txt");
+        proxyCreate pc = new proxyCreate("./src/main/java/znode.file/IoTEvent.txt");
         CompletableFuture<List<String>> allResults = pc.dynamicProxy();
 
         try {
