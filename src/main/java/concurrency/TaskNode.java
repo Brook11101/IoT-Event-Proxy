@@ -18,6 +18,7 @@ public class TaskNode {
     private Long timeStamp;
     private ExecFunc execFunction;
     private AtomicBoolean isFinishing;
+
     public TaskNode(RootNode root, UUID taskUUID, String taskName, Set<UUID> triggerDevices, Set<UUID> actionDevices, ExecFunc execFunction) {
         this.root = root;
         this.taskUUID = taskUUID;
@@ -41,21 +42,14 @@ public class TaskNode {
         return taskName;
     }
 
-    public void runTask() {
-        //逻辑节点插入
+    public void runTask(AtomicBoolean isRunnable, AtomicBoolean isExecuting) {
+        //逻辑节点插入，依赖生成
         init();
         while (!dependencies.isEmpty()) ;
-        //执行等待窗口
-        executeAction();
-        //使用随机数模拟真实action是否到来
-        Random random = new Random();
-        boolean trulyCome = random.nextInt(100) < 90;
-        if (trulyCome) {
-            //实时重新生成依赖关系
-            init();
-            //等待新加入的依赖
-            while (!dependencies.isEmpty()) ;
-        }
+
+        //进入执行流程，获取锁，然后开始等待窗口
+        executeAction(isRunnable, isExecuting);
+
         isFinishing.set(true);
         notifyOthers();
         removeSelf();
@@ -98,7 +92,7 @@ public class TaskNode {
         System.out.printf("TASK %s DEPENDS ON %s%n", this.taskName, this.dependencies.toString());
     }
 
-    private void executeAction() {
+    private void executeAction(AtomicBoolean isRunnable, AtomicBoolean isExecuting) {
         Set<DeviceNode> devices = root.getDeviceNodes();
         devices.forEach((device) -> {
             if (actionDevices.contains(device.getDeviceUUID())) {
@@ -109,19 +103,40 @@ public class TaskNode {
         System.out.printf("TASK %s START EXECUTE%n", this.taskName);
 
         try {
+            //即将进入睡眠，将可被打断设置为true
+            isRunnable.set(true);
+            //sleep
             execFunction.exec();
-        } catch (Exception e) {
-            e.printStackTrace();
+            //睡眠结束，将可被打断设置为false
+            isRunnable.set(false);
+        } catch (InterruptedException e) {
+            System.out.println("逻辑节点更新为真实节点，重新生成依赖");
+            //实时重新生成依赖关系
+            init();
+            //等待新加入的依赖
+            while (!dependencies.isEmpty()) ;
+
+            System.out.printf("TASK %s EXECUTED%n", this.taskName);
+
+            devices.forEach((device) -> {
+                if (actionDevices.contains(device.getDeviceUUID())) {
+                    device.getLock().writeLock().unlock();
+                }
+            });
+
+            return;
         }
 
 
-        System.out.printf("TASK %s EXECUTED%n", this.taskName);
+        System.out.printf("TASK %s WAIT OVERTIME%n", this.taskName);
 
         devices.forEach((device) -> {
             if (actionDevices.contains(device.getDeviceUUID())) {
                 device.getLock().writeLock().unlock();
             }
         });
+
+        isExecuting.set(false);
     }
 
     //主动去修改别的任务的dependencies
