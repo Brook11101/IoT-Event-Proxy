@@ -1,6 +1,7 @@
 package concurrency;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -41,9 +42,20 @@ public class TaskNode {
     }
 
     public void runTask() {
+        //逻辑节点插入
         init();
         while (!dependencies.isEmpty()) ;
+        //执行等待窗口
         executeAction();
+        //使用随机数模拟真实action是否到来
+        Random random = new Random();
+        boolean trulyCome = random.nextInt(100) < 90;
+        if (trulyCome) {
+            //实时重新生成依赖关系
+            init();
+            //等待新加入的依赖
+            while (!dependencies.isEmpty()) ;
+        }
         isFinishing.set(true);
         notifyOthers();
         removeSelf();
