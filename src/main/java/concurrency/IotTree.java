@@ -46,7 +46,8 @@ public class IotTree {
                     Random random = new Random();
                     while (isExecuting.equals(true)) {
 
-                        if (isSleeping.get() && random.nextDouble() < TRUE_ACTION_COME_PERCENT) {
+
+                        if (isSleeping.get() && taskThread.getState().equals(Thread.State.TIMED_WAITING) &&random.nextDouble() < TRUE_ACTION_COME_PERCENT) {
                             System.out.println("模拟真实action到来，打断睡眠等待");
                             taskThread.interrupt();
                             break;

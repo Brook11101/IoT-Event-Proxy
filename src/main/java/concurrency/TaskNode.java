@@ -93,7 +93,15 @@ public class TaskNode {
     }
 
     private void executeAction(AtomicBoolean isRunnable, AtomicBoolean isExecuting) {
+
+
         Set<DeviceNode> devices = root.getDeviceNodes();
+
+
+        //调度规则2的体现
+        //结合着锁，结合着init，2->3
+
+        //锁拆成两个：1顺序  2互斥（理想情况：持有锁，依赖别人，依赖的别人，需要他的这把锁去先执行，能够获取到该锁））（有1的顺序了，就不要2的互斥-调度规则2））
         devices.forEach((device) -> {
             if (actionDevices.contains(device.getDeviceUUID())) {
                 device.getLock().writeLock().lock();
@@ -114,7 +122,7 @@ public class TaskNode {
             //实时重新生成依赖关系
             init();
             //等待新加入的依赖
-            while (!dependencies.isEmpty()) ;
+            while (!dependencies.isEmpty());
 
             System.out.printf("TASK %s EXECUTED%n", this.taskName);
 
