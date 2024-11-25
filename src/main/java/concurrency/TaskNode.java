@@ -58,15 +58,9 @@ public class TaskNode {
     private void init() {
         Set<DeviceNode> devices = root.getDeviceNodes();
 
-        // 将该任务执行动作在每个device下都添加任务
-
-        //这里存在欠缺，因为并没有考虑到对添加的action device node上的其他任务正在执行，所以没有添加相关依赖
-
-        //问题：少规则2啊
         devices.forEach((device) -> {
             if (actionDevices.contains(device.getDeviceUUID())) {
 
-                ///////这里存在欠缺，因为并没有考虑到对添加的action device node上的其他任务正在执行，所以没有添加相关依赖
                 device.getTaskNodes().forEach((t) -> {
                     if (t.timeStamp < this.timeStamp && !t.isFinishing.get()) {
                         t.notifies.add(this);
@@ -103,6 +97,9 @@ public class TaskNode {
 
         //锁拆成两个：1顺序  2互斥（理想情况：持有锁，依赖别人，依赖的别人，需要他的这把锁去先执行，能够获取到该锁））（有1的顺序了，就不要2的互斥-调度规则2））
         devices.forEach((device) -> {
+
+            //获取锁的时候有可能发生死锁。在实现上应该注意考虑，要避免相互持有互不释放造成死锁，需要改进
+
             if (actionDevices.contains(device.getDeviceUUID())) {
                 device.getLock().writeLock().lock();
             }
@@ -125,6 +122,8 @@ public class TaskNode {
             while (!dependencies.isEmpty());
 
             System.out.printf("TASK %s EXECUTED%n", this.taskName);
+
+            //这里面其实有一点小bug，那就是应该在通知完所有的被依赖后在释放这些锁。
 
             devices.forEach((device) -> {
                 if (actionDevices.contains(device.getDeviceUUID())) {
