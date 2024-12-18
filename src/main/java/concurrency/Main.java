@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import static java.lang.Thread.sleep;
 
 
+//TODO: LL/SC机制的实现
+
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         RuleTree ruleTree = new RuleTree();

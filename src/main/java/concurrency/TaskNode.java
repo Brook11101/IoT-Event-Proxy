@@ -54,10 +54,7 @@ public class TaskNode {
 
     public void runTask(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
-        //TODO: 依赖关系生成的时候，必须要加锁
-
-        //TODO: 后来者能看见先来者，但是先来者并不知道后来者，怎么实现通知功能？现有的notify是不全面的，只能通知到能看见的，不能看见的怎么去通知到？
-
+        //依赖关系生成的时候，必须要加锁。但由于生成依赖很快，此时全局加锁消耗忽略不计
         synchronized (TaskNode.class) {
             // 首先将当前 task 的 trigger devices 和 action devices 映射添加进去
             root.addRuleDeviceRelation(triggerDevices, this);
