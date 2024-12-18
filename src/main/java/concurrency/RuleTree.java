@@ -24,8 +24,8 @@ public class RuleTree {
             private final Thread taskThread;
             private final Thread listenerThread;
 
-            //TODO: 任务线程和通知线程应该是独立的，任务线程应该先启动，最多等待五分钟。
-            // 通知线程可以在5min的时间窗口内任意一个点去打断等待，或者不打断。
+            //任务线程和通知线程应该是独立的，任务线程应该先启动，最多等待五分钟。
+            //通知线程可以在5min的时间窗口内任意一个点去打断等待，或者不打断。
 
             TaskWithListener(String taskName, TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, TaskNode.SimpleExecFunc execFunc) {
                 final AtomicBoolean arrivalFlag = new AtomicBoolean(false);
@@ -40,13 +40,13 @@ public class RuleTree {
                 listenerThread = new Thread(() -> {
                     try {
                         // 模拟等待时间窗口5min内收到真实action
-                        long randomDelay = (long) (Math.random() * 300000);
+                        long randomDelay = (long) (Math.random() * 10000);
                         Thread.sleep(randomDelay);
 
                         // 修改第一个原子变量 taskStatus
                         boolean newStatus = Math.random() <= TRUE_ACTION_ARRIVAL_PERCENT;
                         arrivalFlag.set(newStatus);
-                        System.out.println("任务状态修改为: " + newStatus);
+                        System.out.println(taskName + " 任务状态修改为: " + newStatus);
 
                         // 如果 arrivalFlag 为 true，立即停止线程并设置 timeWindowFlag
                         if (arrivalFlag.get()) {
@@ -55,7 +55,7 @@ public class RuleTree {
                         }
 
                         // 如果 arrivalFlag 为 false，模拟消耗完剩下的等待时间
-                        long remainingTime = 300000 - randomDelay;
+                        long remainingTime = 10000 - randomDelay;
                         Thread.sleep(remainingTime); // 剩余时间
 
                         // 等待完毕后修改 stopFlag 为 true，结束线程

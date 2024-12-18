@@ -1,6 +1,8 @@
 package concurrency;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.Thread.sleep;
 
@@ -8,6 +10,8 @@ import static java.lang.Thread.sleep;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         RuleTree ruleTree = new RuleTree();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         //所有设备
         UUID plug = UUID.randomUUID();
@@ -31,46 +35,53 @@ public class Main {
         rule1Triggers.add(plug);
         rule1Actions.add(bulb);
         rule1Actions.add(camera);
-        ruleTree.createTask("rule1", rule1Triggers, rule1Actions, new TaskNode.SimpleExecFunc("task1"));
-
-        sleep(1);
+        //ruleTree.createTask("rule1", rule1Triggers, rule1Actions, new TaskNode.SimpleExecFunc("task1"));
+        submitTask(executorService, ruleTree, "task1", rule1Triggers, rule1Actions, new TaskNode.SimpleExecFunc("task1"));
+        sleep(500);
 
         TreeSet<UUID> rule2Triggers = new TreeSet<>();
         TreeSet<UUID> rule2Actions = new TreeSet<>();
         rule2Triggers.add(bulb);
         rule2Actions.add(plug);
-        ruleTree.createTask("rule2", rule2Triggers, rule2Actions, new TaskNode.SimpleExecFunc("task2"));
+        //ruleTree.createTask("rule2", rule2Triggers, rule2Actions, new TaskNode.SimpleExecFunc("task2"));
+        submitTask(executorService, ruleTree, "task2", rule2Triggers, rule2Actions, new TaskNode.SimpleExecFunc("task2"));
+        sleep(500);
 
-        sleep(1);
 
         TreeSet<UUID> rule3Triggers = new TreeSet<>();
         TreeSet<UUID> rule3Actions = new TreeSet<>();
         rule3Triggers.add(bulb);
         rule3Actions.add(phone);
         rule3Actions.add(camera);
-        ruleTree.createTask("rule3", rule3Triggers, rule3Actions, new TaskNode.SimpleExecFunc("task3"));
-
-        sleep(1);
-
+        //ruleTree.createTask("rule3", rule3Triggers, rule3Actions, new TaskNode.SimpleExecFunc("task3"));
+        submitTask(executorService, ruleTree, "task3", rule3Triggers, rule3Actions, new TaskNode.SimpleExecFunc("task3"));
+        sleep(500);
 
         TreeSet<UUID> rule4Triggers = new TreeSet<>();
         TreeSet<UUID> rule4Actions = new TreeSet<>();
         rule4Triggers.add(wyze);
         rule4Actions.add(bulb);
         rule4Actions.add(camera);
-        ruleTree.createTask("rule4", rule4Triggers, rule4Actions, new TaskNode.SimpleExecFunc("task4"));
+        //ruleTree.createTask("rule4", rule4Triggers, rule4Actions, new TaskNode.SimpleExecFunc("task4"));
+        submitTask(executorService, ruleTree, "task4", rule4Triggers, rule4Actions, new TaskNode.SimpleExecFunc("task4"));
+        sleep(500);
 
-        sleep(1);
 
         TreeSet<UUID> rule5Triggers = new TreeSet<>();
         TreeSet<UUID> rule5Actions = new TreeSet<>();
         rule5Triggers.add(wyze);
         rule5Actions.add(robot);
         rule5Actions.add(ring);
-        ruleTree.createTask("rule5", rule5Triggers, rule5Actions, new TaskNode.SimpleExecFunc("task5"));
+        //ruleTree.createTask("rule5", rule5Triggers, rule5Actions, new TaskNode.SimpleExecFunc("task5"));
+        submitTask(executorService, ruleTree, "task5", rule5Triggers, rule5Actions, new TaskNode.SimpleExecFunc("task5"));
+        executorService.shutdown();
+    }
 
-        sleep(1);
-
-
+    private static void submitTask(ExecutorService executorService, RuleTree ruleTree, String taskName, TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, TaskNode.SimpleExecFunc execFunc) {
+        // 提交任务到线程池
+        executorService.submit(() -> {
+            Thread.currentThread().setName(taskName);
+            ruleTree.createTask(taskName, triggerDevices, actionDevices, new TaskNode.SimpleExecFunc(taskName));
+        });
     }
 }
