@@ -4,52 +4,73 @@ import java.util.*;
 
 import static java.lang.Thread.sleep;
 
-// 按两次 Shift 打开“随处搜索”对话框并输入 `show whitespaces`，
-// 然后按 Enter 键。现在，您可以在代码中看到空格字符。
+
 public class Main {
-    public static void main(String[] args) {
-        IotTree tree = new IotTree();
+    public static void main(String[] args) throws InterruptedException {
+        RuleTree ruleTree = new RuleTree();
 
-        UUID TestDevice1 = UUID.randomUUID();
-        tree.createDevice("test device 1", TestDevice1);
+        //所有设备
+        UUID plug = UUID.randomUUID();
+        ruleTree.createDevice("Wemo Smart Plug", plug);
+        UUID bulb = UUID.randomUUID();
+        ruleTree.createDevice("Yeelight Bulb", bulb);
+        UUID camera = UUID.randomUUID();
+        ruleTree.createDevice("Mijia Camera", camera);
+        UUID phone = UUID.randomUUID();
+        ruleTree.createDevice("Phone", phone);
+        UUID wyze = UUID.randomUUID();
+        ruleTree.createDevice("wyze", wyze);
+        UUID robot = UUID.randomUUID();
+        ruleTree.createDevice("robot", robot);
+        UUID ring = UUID.randomUUID();
+        ruleTree.createDevice("ring", ring);
 
-        UUID TestDevice2 = UUID.randomUUID();
-        tree.createDevice("test device 2", TestDevice2);
+        //所有规则
+        TreeSet<UUID> rule1Triggers = new TreeSet<>();
+        TreeSet<UUID> rule1Actions = new TreeSet<>();
+        rule1Triggers.add(plug);
+        rule1Actions.add(bulb);
+        rule1Actions.add(camera);
+        ruleTree.createTask("rule1", rule1Triggers, rule1Actions, new TaskNode.SimpleExecFunc("task1"));
 
-        UUID TestDevice3 = UUID.randomUUID();
-        tree.createDevice("test device 3", TestDevice3);
+        sleep(1);
 
-        Set<UUID> testTask1Triggers = new HashSet<>();
-        Set<UUID> testTask1Actions = new HashSet<>();
-        testTask1Triggers.add(TestDevice1);
-        testTask1Actions.add(TestDevice2);
-        testTask1Actions.add(TestDevice3);
-        tree.createTask("test task 1", testTask1Triggers, testTask1Actions, () -> sleep(10000));
+        TreeSet<UUID> rule2Triggers = new TreeSet<>();
+        TreeSet<UUID> rule2Actions = new TreeSet<>();
+        rule2Triggers.add(bulb);
+        rule2Actions.add(plug);
+        ruleTree.createTask("rule2", rule2Triggers, rule2Actions, new TaskNode.SimpleExecFunc("task2"));
 
-        try {
-            sleep(500);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        sleep(1);
 
-        Set<UUID> testTask2Triggers = new HashSet<>();
-        testTask2Triggers.add(TestDevice2);
-        Set<UUID> testTask2Actions = new HashSet<>();
-        testTask2Actions.add(TestDevice3);
-        tree.createTask("test task 2", testTask2Triggers, testTask2Actions, () -> sleep(2000));
+        TreeSet<UUID> rule3Triggers = new TreeSet<>();
+        TreeSet<UUID> rule3Actions = new TreeSet<>();
+        rule3Triggers.add(bulb);
+        rule3Actions.add(phone);
+        rule3Actions.add(camera);
+        ruleTree.createTask("rule3", rule3Triggers, rule3Actions, new TaskNode.SimpleExecFunc("task3"));
 
-//        try {
-//            sleep(200);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        Set<UUID> testTask3Triggers = new HashSet<>();
-//        testTask3Triggers.add(TestDevice1);
-//        testTask3Triggers.add(TestDevice2);
-//        Set<UUID> testTask3Actions = new HashSet<>();
-//        testTask3Actions.add(TestDevice3);
-//        tree.createTask("test task 3", testTask3Triggers, testTask3Actions, () -> sleep(3000));
+        sleep(1);
+
+
+        TreeSet<UUID> rule4Triggers = new TreeSet<>();
+        TreeSet<UUID> rule4Actions = new TreeSet<>();
+        rule4Triggers.add(wyze);
+        rule4Actions.add(bulb);
+        rule4Actions.add(camera);
+        ruleTree.createTask("rule4", rule4Triggers, rule4Actions, new TaskNode.SimpleExecFunc("task4"));
+
+        sleep(1);
+
+        TreeSet<UUID> rule5Triggers = new TreeSet<>();
+        TreeSet<UUID> rule5Actions = new TreeSet<>();
+        rule5Triggers.add(wyze);
+        rule5Actions.add(robot);
+        rule5Actions.add(ring);
+        ruleTree.createTask("rule5", rule5Triggers, rule5Actions, new TaskNode.SimpleExecFunc("task5"));
+
+        sleep(1);
+
 
     }
 }

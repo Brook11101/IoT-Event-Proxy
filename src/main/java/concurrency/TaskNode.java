@@ -1,25 +1,35 @@
 package concurrency;
 
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskNode {
+    //所属根节点
     private RootNode root;
+
     private UUID taskUUID;
     private String taskName;
-    private CopyOnWriteArraySet<TaskNode> dependencies = new CopyOnWriteArraySet<>();
-    private CopyOnWriteArraySet<TaskNode> notifies = new CopyOnWriteArraySet<>();
-    private Set<UUID> triggerDevices;
-    private Set<UUID> actionDevices;
-    private Long timeStamp;
-    private ExecFunc execFunction;
-    private AtomicBoolean isFinishing;
 
-    public TaskNode(RootNode root, UUID taskUUID, String taskName, Set<UUID> triggerDevices, Set<UUID> actionDevices, ExecFunc execFunction) {
+    //依赖集合：需要等待其他TaskNode先执行完成
+    private CopyOnWriteArraySet<TaskNode> dependencies = new CopyOnWriteArraySet<>();
+    //被依赖集合：等待当前TaskNode的集合
+    private CopyOnWriteArraySet<TaskNode> notifies = new CopyOnWriteArraySet<>();
+    //Trigger 设备集合
+    private TreeSet<UUID> triggerDevices;
+    //Action 设备集合
+    private TreeSet<UUID> actionDevices;
+    //根据Trigger推理出规则触发的时间
+    private Long timeStamp;
+    //规则执行内容
+    private ExecFunc execFunction;
+
+    //当前taskThread是否结束执行
+    private AtomicBoolean hasFinished;
+
+    public TaskNode(RootNode root, UUID taskUUID, String taskName, TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, SimpleExecFunc execFunction) {
         this.root = root;
         this.taskUUID = taskUUID;
         this.taskName = taskName;
@@ -27,11 +37,7 @@ public class TaskNode {
         this.actionDevices = actionDevices;
         this.timeStamp = System.currentTimeMillis();
         this.execFunction = execFunction;
-        this.isFinishing = new AtomicBoolean(false);
-    }
-
-    public interface ExecFunc {
-        void exec() throws InterruptedException;
+        this.hasFinished = new AtomicBoolean(false);
     }
 
     public UUID getTaskUUID() {
@@ -42,40 +48,63 @@ public class TaskNode {
         return taskName;
     }
 
-    public void runTask(AtomicBoolean isRunnable, AtomicBoolean isExecuting) {
-        //逻辑节点插入，依赖生成
-        init();
-        while (!dependencies.isEmpty()) ;
+    public Long getTimeStamp() {return timeStamp;}
+
+    public void runTask(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
+
+        // 首先将当前 task 的 trigger devices 和 action devices 映射添加进去
+        root.addRuleDeviceRelation(triggerDevices,this);
+        //用于生成依赖关系
+        generatingDependency();
+        //持续等待，监听依赖是否为空
+        while (!dependencies.isEmpty());
+
+
+        //获取设备写锁，保证action的原子性
+        Set<DeviceNode> devices = root.getDeviceNodes();
+        devices.forEach((device) -> {
+            if (actionDevices.contains(device.getDeviceUUID())) {
+                device.getWriteLock().lock();
+            }
+        });
+
+        System.out.printf("获取执行设备的写锁成功: ", this.taskName);
 
         //进入执行流程，获取锁，然后开始等待窗口
-        executeAction(isRunnable, isExecuting);
+        executeAction(arrivalFlag, timeWindowFlag);
+        hasFinished.set(true);
 
-        isFinishing.set(true);
-        notifyOthers();
-        removeSelf();
-    }
-
-    private void init() {
-        Set<DeviceNode> devices = root.getDeviceNodes();
+        //执行完通知其他TaskNode，同时将自己摘除
+        cleanupDependenciesAndSelf();
+        //在执行完成后将trigger devices与该 taskNode移除
+        root.removeRuleDeviceRelation(triggerDevices,this);
 
         devices.forEach((device) -> {
             if (actionDevices.contains(device.getDeviceUUID())) {
+                device.getWriteLock().unlock();
+            }
+        });
+        System.out.printf("释放执行设备的写锁成功: ", this.taskName);
+    }
 
-                device.getTaskNodes().forEach((t) -> {
-                    if (t.timeStamp < this.timeStamp && !t.isFinishing.get()) {
-                        t.notifies.add(this);
-                        dependencies.add(t);
-                    }
-                });
+    private void generatingDependency() {
+
+//        Set<DeviceNode> devices = root.getDeviceNodes();
+//        devices.forEach((device) -> {
+//            if (actionDevices.contains(device.getDeviceUUID())) {
+//                device.getReadLock().lock();
+//            }
+//        });
+//        System.out.println("获取了相关设备的读锁 " + this.taskName + this.dependencies.toString() + this.notifies.toString());
+
+        //调度规则2：作用在同一个device上的rule task按照时间的先后顺序执行
+        root.getDeviceNodes().stream().forEach((device) -> {
+            if (actionDevices.contains(device.getDeviceUUID())) {
+                //先讲自己的占位符加进去
                 device.getTaskNodes().add(this);
-            }
-        });
-
-        // 对于所有的trigger依赖，添加任务到每个task的notify中，并在自己的dependency中添加别人
-        devices.forEach((device) -> {
-            if (triggerDevices.contains(device.getDeviceUUID())) {
+                //根据已有的生成依赖关系
                 device.getTaskNodes().forEach((t) -> {
-                    if (t.timeStamp < this.timeStamp && !t.isFinishing.get()) {
+                    if (t.timeStamp < this.timeStamp && !t.hasFinished.get()) {
                         t.notifies.add(this);
                         dependencies.add(t);
                     }
@@ -83,81 +112,80 @@ public class TaskNode {
             }
         });
 
-        System.out.printf("TASK %s DEPENDS ON %s%n", this.taskName, this.dependencies.toString());
-    }
-
-    private void executeAction(AtomicBoolean isRunnable, AtomicBoolean isExecuting) {
-
-
-        Set<DeviceNode> devices = root.getDeviceNodes();
-
-
-        //调度规则2的体现
-        //结合着锁，结合着init，2->3
-
-        //锁拆成两个：1顺序  2互斥（理想情况：持有锁，依赖别人，依赖的别人，需要他的这把锁去先执行，能够获取到该锁））（有1的顺序了，就不要2的互斥-调度规则2））
-        devices.forEach((device) -> {
-
-            //获取锁的时候有可能发生死锁。在实现上应该注意考虑，要避免相互持有互不释放造成死锁，需要改进
-
-            if (actionDevices.contains(device.getDeviceUUID())) {
-                device.getLock().writeLock().lock();
-            }
-        });
-
-        System.out.printf("TASK %s START EXECUTE%n", this.taskName);
-
-        try {
-            //即将进入睡眠，将可被打断设置为true
-            isRunnable.set(true);
-            //sleep
-            execFunction.exec();
-            //睡眠结束，将可被打断设置为false
-            isRunnable.set(false);
-        } catch (InterruptedException e) {
-            System.out.println("逻辑节点更新为真实节点，重新生成依赖");
-            //实时重新生成依赖关系
-            init();
-            //等待新加入的依赖
-            while (!dependencies.isEmpty());
-
-            System.out.printf("TASK %s EXECUTED%n", this.taskName);
-
-            //这里面其实有一点小bug，那就是应该在通知完所有的被依赖后在释放这些锁。
-
-            devices.forEach((device) -> {
-                if (actionDevices.contains(device.getDeviceUUID())) {
-                    device.getLock().writeLock().unlock();
+        //调度规则1：由同一个device触发的rule task，按照trigger触发的先后顺序，编排trigger对应的action的动作
+        Set<TaskNode> taskNodesForTriggerDevices = root.getRuleDeviceRelation().get(triggerDevices);
+        if (taskNodesForTriggerDevices != null) {
+            taskNodesForTriggerDevices.stream().forEach((taskNode) -> {
+                if (taskNode.getTimeStamp() < this.timeStamp && !taskNode.hasFinished.get()) {
+                    taskNode.notifies.add(this);
+                    this.dependencies.add(taskNode);
                 }
             });
-
-            return;
         }
+        System.out.println("根据调度规则生成依赖关系完毕 " + this.taskName + this.dependencies.toString() + this.notifies.toString());
 
+//        devices.forEach((device) -> {
+//            if (actionDevices.contains(device.getDeviceUUID())) {
+//                device.getReadLock().unlock();
+//            }
+//        });
+//        System.out.println("释放了相关设备的读锁 " + this.taskName + this.dependencies.toString() + this.notifies.toString());
+    }
 
-        System.out.printf("TASK %s WAIT OVERTIME%n", this.taskName);
+    private void executeAction(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
-        devices.forEach((device) -> {
-            if (actionDevices.contains(device.getDeviceUUID())) {
-                device.getLock().writeLock().unlock();
+        System.out.printf("任务开始等待真实action: ", this.taskName);
+
+        //判断真实action已到达或者等待时间窗口结束
+        while (!arrivalFlag.get() && !timeWindowFlag.get());
+
+        //处理真实action到达，开始正常执行
+        if(arrivalFlag.get()){
+            try {
+                System.out.printf("任务收到真实action，开始执行: ", this.taskName);
+                execFunction.exec();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        });
-
-        isExecuting.set(false);
+        }else{
+            if(timeWindowFlag.get()){
+                System.out.printf("任务超出等待时间窗口，结束执行: ", this.taskName);
+                return;
+            }
+        }
     }
 
-    //主动去修改别的任务的dependencies
-    private void notifyOthers() {
+    private void cleanupDependenciesAndSelf() {
+        // 主动去修改别的任务的 dependencies
         notifies.forEach((n) -> n.dependencies.remove(this));
-    }
 
-    private void removeSelf() {
+        // 从设备节点中移除自身
         Set<DeviceNode> devices = root.getDeviceNodes();
-
         devices.forEach((device) -> {
             if (actionDevices.contains(device.getDeviceUUID())) {
                 device.getTaskNodes().remove(this);
             }
         });
     }
+
+
+    public interface ExecFunc {
+        void exec() throws InterruptedException;
+    }
+
+    public static class SimpleExecFunc implements ExecFunc {
+        private final String taskName;
+
+        public SimpleExecFunc(String taskName) {
+            this.taskName = taskName;
+        }
+
+        @Override
+        public void exec() throws InterruptedException {
+            System.out.println("正在执行任务: " + taskName);
+            Thread.sleep(1000);  // 模拟任务执行
+            System.out.println("结束执行任务: " + taskName);
+        }
+    }
+
 }
