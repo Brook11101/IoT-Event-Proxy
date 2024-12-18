@@ -69,6 +69,7 @@ public class TaskNode {
         // 持续等待，监听依赖是否为空
         while (!dependencies.isEmpty()){
             try {
+                System.out.println(this.taskName + " 监听依赖中 " + dependencies.toString());
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

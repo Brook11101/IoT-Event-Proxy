@@ -71,7 +71,7 @@ public class RuleTree {
 
                 // 防止 listenerThread 线程先执行
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
