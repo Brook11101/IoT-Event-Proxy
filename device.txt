@@ -1,0 +1,8 @@
+name,uuidVar
+Wemo Smart Plug,plug
+Yeelight Bulb,bulb
+Mijia Camera,camera
+Phone,phone
+wyze,wyze
+robot,robot
+ring,ring

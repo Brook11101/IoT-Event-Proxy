@@ -1,0 +1,6 @@
+name,triggerCount,actionCount,triggerList,actionList
+rule1,3,2,plug,wyze,phone,bulb,camera
+rule2,1,1,bulb,plug
+rule3,1,2,bulb,phone,camera
+rule4,1,2,wyze,bulb,camera
+rule5,1,2,wyze,robot,ring
