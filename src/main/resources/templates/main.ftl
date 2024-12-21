@@ -1,6 +1,9 @@
 <#-- main.ftl -->
 package concurrency;
 
+import concurrency.scheduling.RuleTree;
+import concurrency.scheduling.TaskNode;
+
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

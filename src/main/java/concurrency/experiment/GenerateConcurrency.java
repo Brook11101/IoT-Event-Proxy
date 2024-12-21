@@ -1,4 +1,4 @@
-package concurrency;
+package concurrency.experiment;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -19,10 +19,10 @@ public class GenerateConcurrency {
     public static void main(String[] args) {
         try {
             // 1. 解析 device.csv
-            List<DeviceInfo> deviceList = parseDeviceFile("device.txt");
+            List<DeviceInfo> deviceList = parseDeviceFile("src/main/java/concurrency/experiment/data/device.txt");
 
             // 2. 解析 rules.txt (行中先读name,triggerCount,actionCount，再根据数量读触发/动作设备)
-            List<RuleInfo> ruleList = parseRulesFile("rules.txt");
+            List<RuleInfo> ruleList = parseRulesFile("src/main/java/concurrency/experiment/data/rules.txt");
 
             // 3. 初始化 FreeMarker
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_31);
@@ -57,9 +57,9 @@ public class GenerateConcurrency {
      * Wemo Smart Plug,plug
      * ...
      */
-    private static List<DeviceInfo> parseDeviceFile(String csvPath) throws IOException {
+    private static List<DeviceInfo> parseDeviceFile(String filePath) throws IOException {
         List<DeviceInfo> deviceList = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(csvPath))) {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
             String header = br.readLine(); // 跳过表头 (name,uuidVar)
             String line;
             while ((line = br.readLine()) != null) {

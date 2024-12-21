@@ -1,4 +1,4 @@
-package concurrency;
+package concurrency.experiment;
 
 import java.util.ArrayList;
 import java.util.List;
