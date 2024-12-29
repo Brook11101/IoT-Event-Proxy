@@ -1,4 +1,3 @@
-<#-- main.ftl -->
 package concurrency;
 
 import concurrency.scheduling.RuleTree;
@@ -25,26 +24,22 @@ ExecutorService executorService = Executors.newFixedThreadPool(50);
 // ============ 生成规则部分 ============
 <#list rules as rule>
 {
-<#--System.out.println("创建规则: ${rule.name}, " +-->
-<#--"triggerCount=${rule.triggerCount}, " +-->
-<#--"actionCount=${rule.actionCount}");-->
-
-    TreeSet<UUID> triggerDevices = new TreeSet<>();
+TreeSet<UUID> triggerDevices = new TreeSet<>();
     TreeSet<UUID> actionDevices = new TreeSet<>();
 
-        <#-- 遍历 triggers -->
+        // 遍历 triggers
         <#list rule.triggers as tDev>
             triggerDevices.add(${tDev});
         </#list>
 
-        <#-- 遍历 actions -->
+        // 遍历 actions
         <#list rule.actions as aDev>
             actionDevices.add(${aDev});
         </#list>
 
-        submitTask(executorService, ruleTree, "${rule.name}",
+        submitTask(executorService, ruleTree, "Rule-${rule.id}",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("${rule.name}"));
+        new TaskNode.SimpleExecFunc("${rule.description}"));
         sleep(500);
         }
         </#list>
@@ -55,7 +50,9 @@ ExecutorService executorService = Executors.newFixedThreadPool(50);
         private static void submitTask(ExecutorService executorService,
         RuleTree ruleTree,
         String taskName,
-        TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, TaskNode.SimpleExecFunc execFunc) { executorService.submit(() -> {
+        TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices,
+                TaskNode.SimpleExecFunc execFunc) {
+                executorService.submit(() -> {
                 Thread.currentThread().setName(taskName);
                 ruleTree.createTask(taskName, triggerDevices, actionDevices, execFunc);
                 });

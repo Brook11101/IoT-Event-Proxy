@@ -7,31 +7,24 @@ import java.util.List;
  * 用于存储 rules.txt 解析结果
  */
 public class RuleInfo {
-    private String name;          // 规则名称
-    private int triggerCount;     // 触发设备个数
-    private int actionCount;      // 动作设备个数
+    private int id;                // 规则 ID
+    private String description;    // 规则描述
+    private List<String> triggers; // 解析到的触发设备名称
+    private List<String> actions;  // 解析到的动作设备名称
 
-    private List<String> triggers;  // 解析到的触发设备名称
-    private List<String> actions;   // 解析到的动作设备名称
-
-    public RuleInfo(String name, int triggerCount, int actionCount) {
-        this.name = name;
-        this.triggerCount = triggerCount;
-        this.actionCount = actionCount;
+    public RuleInfo(int id, String description) {
+        this.id = id;
+        this.description = description;
         this.triggers = new ArrayList<>();
         this.actions = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
 
-    public int getTriggerCount() {
-        return triggerCount;
-    }
-
-    public int getActionCount() {
-        return actionCount;
+    public String getDescription() {
+        return description;
     }
 
     public List<String> getTriggers() {
@@ -45,9 +38,8 @@ public class RuleInfo {
     @Override
     public String toString() {
         return "RuleInfo{" +
-                "name='" + name + '\'' +
-                ", triggerCount=" + triggerCount +
-                ", actionCount=" + actionCount +
+                "id=" + id +
+                ", description='" + description + '\'' +
                 ", triggers=" + triggers +
                 ", actions=" + actions +
                 '}';

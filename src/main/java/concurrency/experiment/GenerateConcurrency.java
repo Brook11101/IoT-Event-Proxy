@@ -1,5 +1,8 @@
 package concurrency.experiment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -8,6 +11,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 读取 device.csv、rules.txt，解析后使用 FreeMarker 生成 Main.java
@@ -19,10 +23,10 @@ public class GenerateConcurrency {
     public static void main(String[] args) {
         try {
             // 1. 解析 device.csv
-            List<DeviceInfo> deviceList = parseDeviceFile("src/main/java/concurrency/experiment/data/device.txt");
+            List<DeviceInfo> deviceList = parseDeviceFile("src/main/java/concurrency/experiment/RealUser/RealUserDevice.txt");
 
             // 2. 解析 rules.txt (行中先读name,triggerCount,actionCount，再根据数量读触发/动作设备)
-            List<RuleInfo> ruleList = parseRulesFile("src/main/java/concurrency/experiment/data/rules.txt");
+            List<RuleInfo> ruleList = parseRulesLog("E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\detector\\matcher\\RealUser\\SynchronizationComparison\\synclogs.txt");
 
             // 3. 初始化 FreeMarker
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_31);
@@ -77,57 +81,38 @@ public class GenerateConcurrency {
         return deviceList;
     }
 
-    /**
-     * 解析 rules.txt
-     * 格式:
-     * name,triggerCount,actionCount,triggerList,actionList
-     * rule1,1,2,plug,bulb,camera
-     * rule2,1,1,bulb,plug
-     * ...
-     *
-     * columns[0] = name
-     * columns[1] = triggerCount
-     * columns[2] = actionCount
-     * 后续 columns[...] = 触发设备 + 动作设备
-     */
-    private static List<RuleInfo> parseRulesFile(String filePath) throws IOException {
+    private static List<RuleInfo> parseRulesLog(String filePath) throws IOException {
         List<RuleInfo> ruleList = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
-            // 第一行是表头 "name,triggerCount,actionCount,triggerList,actionList"
-            br.readLine(); // 跳过即可
+        Gson gson = new GsonBuilder()
+                .setLenient() // 启用宽松模式，允许非标准 JSON 格式
+                .create();
 
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] columns = line.split(",");
-                if (columns.length < 3) {
-                    // 至少要 name, triggerCount, actionCount
-                    continue;
-                }
-                // 1) 基本信息
-                String name = columns[0].trim();
-                int triggerCount = Integer.parseInt(columns[1].trim());
-                int actionCount  = Integer.parseInt(columns[2].trim());
+                Map<String, Object> ruleData = gson.fromJson(line, Map.class);
 
-                RuleInfo rule = new RuleInfo(name, triggerCount, actionCount);
+                // 提取规则 ID 和描述
+                int id = ((Double) ruleData.get("id")).intValue(); // Gson 解析数字为 Double
+                String description = (String) ruleData.get("description");
+                RuleInfo rule = new RuleInfo(id, description.replace("\\&", "&"));
 
-                // 2) 解析触发设备
-                int index = 3; // 从 columns[3] 开始
-                for (int i = 0; i < triggerCount; i++) {
-                    if (index + i < columns.length) {
-                        rule.getTriggers().add(columns[index + i].trim());
-                    }
-                }
-                // 3) 解析动作设备
-                index = 3 + triggerCount;
-                for (int i = 0; i < actionCount; i++) {
-                    if (index + i < columns.length) {
-                        rule.getActions().add(columns[index + i].trim());
-                    }
-                }
+                // 提取 triggers：只取设备名称
+                List<String> triggers = new ArrayList<>();
+                triggers.add((String) ((List<?>) ruleData.get("Trigger")).get(0));
+                rule.getTriggers().addAll(triggers);
+
+                // 提取 actions：只取设备名称
+                List<String> actions = ((List<List<?>>) ruleData.get("Action"))
+                        .stream()
+                        .map(action -> action.get(0).toString()) // 仅取设备名称
+                        .collect(Collectors.toList());
+                rule.getActions().addAll(actions);
 
                 ruleList.add(rule);
             }
         }
         return ruleList;
     }
+
 }
