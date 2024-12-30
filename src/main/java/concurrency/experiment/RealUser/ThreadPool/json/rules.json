@@ -1,0 +1,4127 @@
+[
+  {
+    "id": 1,
+    "description": "if Netatmo Weather Station(11) is Windy, close MiJia Curtains(1,2)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 2,
+    "description": "if i leave home, start the iRobot(7)",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 3,
+    "description": "if door opened(4),notify me.",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "Notification"
+    ]
+  },
+  {
+    "id": 4,
+    "description": "if i leave home, close all lamps(12,13,14,15,16)",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 5,
+    "description": "If door(5) is locked, after 10sec, turn off the Yeelight Bulb(3)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 6,
+    "description": "If door(5) is unlocked between 11pm-4am, record a short vedio clip(18) and turn on notification(18)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WyzeCamera",
+      "Notification"
+    ]
+  },
+  {
+    "id": 7,
+    "description": "Every 30 minutes check PIR motion sensor(19), if 1h since last person detected, close lamp (12-13)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2"
+    ]
+  },
+  {
+    "id": 8,
+    "description": "Every 30 minutes check PIR motion sensor(20), if 1h since last person detected, close lamp (13-14)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 9,
+    "description": "Every 30 minutes check PIR motion sensor21, if 1h since last person detected, close lamp 15\u002616",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 10,
+    "description": "If door(5) unlock, when night, then lamp(14) on",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3"
+    ]
+  },
+  {
+    "id": 11,
+    "description": "If door(5) unlock, then lights(6,8,11,17-18) switch on",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "RingDoorbell",
+      "AlexaVoiceAssistance",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 12,
+    "description": "If weather station(11) detect wind speed rise, curtain(1,2) switch off",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 13,
+    "description": "After 7 pm, I come to the room, when I open the door, the curtain should be closed",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 14,
+    "description": "When I leave the room, the curtain should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 15,
+    "description": "After we leave the room, about 10 pm everyday, the bulb should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 16,
+    "description": "After we leave the room, about 10 pm everyday, the curtain should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 17,
+    "description": "After we leave the room, about 10 pm everyday, the smart plug should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 18,
+    "description": "When I leave the room, the camera should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 19,
+    "description": "if smartThings Door Sensor (4) Any new motion ,then turn on Yeelight (12-16)",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 20,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 21,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 22,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 23,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 24,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 25,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 26,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 27,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 28,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 29,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 30,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 31,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 32,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 33,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 34,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 35,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 36,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 37,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 38,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 39,
+    "description": "if air conditioner(10) is opened, close curtains(1,2)",
+    "triggers": [
+      "MideaAirConditioner"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 40,
+    "description": "if rain(11), close the curtains(1,2)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 41,
+    "description": "if motion(19) detected, open the wemo smart plug(17).",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 42,
+    "description": "if motion detected(19), open the camera(18)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 43,
+    "description": "If PIR motion senser(19) detects person, turn on Yeelight Ceiling Lamp (12-13)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2"
+    ]
+  },
+  {
+    "id": 44,
+    "description": "If PIR motion senser(20) detects person, turn on Yeelight Ceiling Lamp (13-14)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 45,
+    "description": "If person detected by PIR motion(19), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 46,
+    "description": "If person detected by PIR motion(20), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 47,
+    "description": "If sensor(19) detect person, wyze(18) enable motion detection",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 48,
+    "description": "If PIR Motion Sensor(20) detects person, enable Camera(18) motion detection",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 49,
+    "description": "If it is raining in winter, the curtain should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 50,
+    "description": "If it is raining after 5 pm, the bulb should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 51,
+    "description": "if iRobot Roomba(7) Job Complete ,then Wemo Smart Plug（17）Turn off",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 52,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 53,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 54,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 55,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 56,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 57,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 58,
+    "description": "If wemo is open, close curtain(1) and curtain(2)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 59,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 60,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 61,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 62,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 63,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 64,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 65,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 66,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 67,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 68,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 69,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 70,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 71,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 72,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 73,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 74,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 75,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 76,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 77,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 78,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 79,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 80,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 81,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 82,
+    "description": "if door opened(5), when after 7p.m., open the lamps(12,13,14,15,16)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 83,
+    "description": "if air conditioner(10) is opened, close curtains(1,2)",
+    "triggers": [
+      "MideaAirConditioner"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 84,
+    "description": "If PIR motion senser(21) detects person, turn on Yeelight Ceiling Lamp (15-16)",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 85,
+    "description": "If person detected by PIR motion(21), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 86,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 87,
+    "description": "If door(5) lock, when door sensor(4) open, then wyze(18) alert",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 88,
+    "description": "If door(5) lock, when fri, then iRobot(7) cleaning a room",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 89,
+    "description": "If door(5) lock, wemo(17) and purifier(22) switch off",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WemoSmartPlug",
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 90,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 91,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 92,
+    "description": "if door opened(5), open the lamps(12,13,14,15,16)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 93,
+    "description": "if Mijia Door Lock(5) locked,then turn on Wyze Camera(18)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 94,
+    "description": "if Netatmo Weather Station(11) Air pressure rises above,then Mijia Purifier(22) Start",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 95,
+    "description": "if iRobot Roomba(7) Job Complete ,then Wemo Smart Plug（17）Turn off",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 96,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 97,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 98,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 99,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 100,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 101,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 102,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 103,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 104,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 105,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 106,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 107,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 108,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 109,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 110,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 111,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 112,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 113,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 114,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 115,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 116,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 117,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 118,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 119,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 120,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 121,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 122,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 123,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 124,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 125,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 126,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 127,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 128,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 129,
+    "description": "if door opened(4),notify me.",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "Notification"
+    ]
+  },
+  {
+    "id": 130,
+    "description": "if rain(11), close the curtains(1,2)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 131,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 132,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 133,
+    "description": "Tell Alexa(8) to open/close a certain Curtain(1-2)",
+    "triggers": [
+      "AlexaVoiceAssistance"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 134,
+    "description": "Every 30 minutes check PIR motion sensor(19), if 1h since last person detected, close lamp (12-13)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2"
+    ]
+  },
+  {
+    "id": 135,
+    "description": "Every 30 minutes check PIR motion sensor(20), if 1h since last person detected, close lamp (13-14)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 136,
+    "description": "Every 30 minutes check PIR motion sensor21, if 1h since last person detected, close lamp 15\u002616",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 137,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 138,
+    "description": "If wemo is open, close curtain(1) and curtain(2)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 139,
+    "description": "After 7 pm, I come to the room, when I open the door, the curtain should be closed",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 140,
+    "description": "If it is raining in winter, the curtain should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 141,
+    "description": "If it is raining after 5 pm, the bulb should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 142,
+    "description": "if smartThings Door Sensor (4) Any new motion ,then turn on Yeelight (12-16)",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 143,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 144,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 145,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 146,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 147,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 148,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 149,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 150,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 151,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 152,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 153,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 154,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 155,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 156,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 157,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 158,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 159,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 160,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 161,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 162,
+    "description": "if doorbell rings(6), open the Yeelight Bulb(3)",
+    "triggers": [
+      "RingDoorbell"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 163,
+    "description": "If motion(18) is detected by Wyze Camera, turn on Philips Hue Light(9) and Mijia Projecter(23)",
+    "triggers": [
+      "WyzeCamera"
+    ],
+    "actions": [
+      "PhilipsHueLight",
+      "MijiaProjector"
+    ]
+  },
+  {
+    "id": 164,
+    "description": "If Camera(18) detects person, open Light(9)",
+    "triggers": [
+      "WyzeCamera"
+    ],
+    "actions": [
+      "PhilipsHueLight"
+    ]
+  },
+  {
+    "id": 165,
+    "description": "If Doorbell(6) rings, mute Projector (23)",
+    "triggers": [
+      "RingDoorbell"
+    ],
+    "actions": [
+      "MijiaProjector"
+    ]
+  },
+  {
+    "id": 166,
+    "description": "If Camera(18) detect person, unmute Projector(23)",
+    "triggers": [
+      "WyzeCamera"
+    ],
+    "actions": [
+      "MijiaProjector"
+    ]
+  },
+  {
+    "id": 167,
+    "description": "if Ring Doorbell（6） new ring detected,then Alexa Voice Assistance（8） sing a song",
+    "triggers": [
+      "RingDoorbell"
+    ],
+    "actions": [
+      "AlexaVoiceAssistance"
+    ]
+  },
+  {
+    "id": 168,
+    "description": "if Wyze Camera（18）Smoke alarm is detected ,then  Alexa Voice Assistance（8） alarm",
+    "triggers": [
+      "WyzeCamera"
+    ],
+    "actions": [
+      "AlexaVoiceAssistance"
+    ]
+  },
+  {
+    "id": 169,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 170,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 171,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 172,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 173,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 174,
+    "description": "if air conditioner(10) is opened, close curtains(1,2)",
+    "triggers": [
+      "MideaAirConditioner"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 175,
+    "description": "If door(5) is locked, after 10sec, turn off the Yeelight Bulb(3)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 176,
+    "description": "If door(5) is unlocked between 11pm-4am, record a short vedio clip(18) and turn on notification(18)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WyzeCamera",
+      "Notification"
+    ]
+  },
+  {
+    "id": 177,
+    "description": "Tell Alexa(8) to open/close a certain Curtain(1-2)",
+    "triggers": [
+      "AlexaVoiceAssistance"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 178,
+    "description": "If PIR motion senser(21) detects person, turn on Yeelight Ceiling Lamp (15-16)",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 179,
+    "description": "If person detected by PIR motion(21), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 180,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 181,
+    "description": "If door(5) unlock, when night, then lamp(14) on",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3"
+    ]
+  },
+  {
+    "id": 182,
+    "description": "If door(5) unlock, then lights(6,8,11,17-18) switch on",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "RingDoorbell",
+      "AlexaVoiceAssistance",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 183,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 184,
+    "description": "If Weather Station(11) detects rain stop, turn off Purifier(22)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 185,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 186,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 187,
+    "description": "if Netatmo Weather Station(11) rain no longer detected,then Mijia Purifier(22) Start",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 188,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 189,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 190,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 191,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 192,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 193,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 194,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 195,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 196,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 197,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 198,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 199,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 200,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 201,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 202,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 203,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 204,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 205,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 206,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 207,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 208,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 209,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 210,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 211,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 212,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 213,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 214,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 215,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 216,
+    "description": "if i leave home, start the iRobot(7)",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 217,
+    "description": "if doorbell rings(6), open the Yeelight Bulb(3)",
+    "triggers": [
+      "RingDoorbell"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 218,
+    "description": "if i leave home, close all lamps(12,13,14,15,16)",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 219,
+    "description": "if motion(19) detected, open the wemo smart plug(17).",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 220,
+    "description": "if motion detected(19), open the camera(18)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 221,
+    "description": "If PIR motion senser(19) detects person, turn on Yeelight Ceiling Lamp (12-13)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2"
+    ]
+  },
+  {
+    "id": 222,
+    "description": "Every 30 minutes check PIR motion sensor(20), if 1h since last person detected, close lamp (13-14)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 223,
+    "description": "If person detected by PIR motion(19), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 224,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 225,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 226,
+    "description": "If sensor(19) detect person, wyze(18) enable motion detection",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 227,
+    "description": "If Doorbell(6) rings, mute Projector (23)",
+    "triggers": [
+      "RingDoorbell"
+    ],
+    "actions": [
+      "MijiaProjector"
+    ]
+  },
+  {
+    "id": 228,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 229,
+    "description": "When I leave the room, the curtain should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 230,
+    "description": "After we leave the room, about 10 pm everyday, the bulb should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 231,
+    "description": "After we leave the room, about 10 pm everyday, the curtain should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 232,
+    "description": "After we leave the room, about 10 pm everyday, the smart plug should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 233,
+    "description": "When I leave the room, the camera should be closed.",
+    "triggers": [
+      "Location"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 234,
+    "description": "if Ring Doorbell（6） new ring detected,then Alexa Voice Assistance（8） sing a song",
+    "triggers": [
+      "RingDoorbell"
+    ],
+    "actions": [
+      "AlexaVoiceAssistance"
+    ]
+  },
+  {
+    "id": 235,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 236,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 237,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 238,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 239,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 240,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 241,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 242,
+    "description": "If wemo is open, close curtain(1) and curtain(2)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 243,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 244,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 245,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 246,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 247,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 248,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 249,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 250,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 251,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 252,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 253,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 254,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 255,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 256,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 257,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 258,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 259,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 260,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 261,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 262,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 263,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 264,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 265,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 266,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 267,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 268,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 269,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 270,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 271,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 272,
+    "description": "if door opened(5), when after 7p.m., open the lamps(12,13,14,15,16)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 273,
+    "description": "if air conditioner(10) is opened, close curtains(1,2)",
+    "triggers": [
+      "MideaAirConditioner"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 274,
+    "description": "if rain(11), close the curtains(1,2)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 275,
+    "description": "Tell Alexa(8) to open/close a certain Curtain(1-2)",
+    "triggers": [
+      "AlexaVoiceAssistance"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 276,
+    "description": "Every 30 minutes check PIR motion sensor21, if 1h since last person detected, close lamp 15\u002616",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 277,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 278,
+    "description": "If door(5) lock, when door sensor(4) open, then wyze(18) alert",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 279,
+    "description": "If door(5) lock, when fri, then iRobot(7) cleaning a room",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 280,
+    "description": "If door(5) lock, wemo(17) and purifier(22) switch off",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WemoSmartPlug",
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 281,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 282,
+    "description": "If it is raining in winter, the curtain should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 283,
+    "description": "If it is raining after 5 pm, the bulb should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 284,
+    "description": "if door opened(5), open the lamps(12,13,14,15,16)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 285,
+    "description": "if Mijia Door Lock(5) locked,then turn on Wyze Camera(18)",
+    "triggers": [
+      "MijiaDoorLock"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 286,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 287,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 288,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 289,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 290,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 291,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 292,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 293,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 294,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 295,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 296,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 297,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 298,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 299,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 300,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 301,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 302,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 303,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 304,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 305,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 306,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 307,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 308,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 309,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 310,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 311,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 312,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 313,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 314,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 315,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 316,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 317,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 318,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 319,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 320,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 321,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 322,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 323,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 324,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 325,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 326,
+    "description": "if door opened(4),notify me.",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "Notification"
+    ]
+  },
+  {
+    "id": 327,
+    "description": "if air conditioner(10) is opened, close curtains(1,2)",
+    "triggers": [
+      "MideaAirConditioner"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 328,
+    "description": "if sun(12), open the curtains(1,2)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 329,
+    "description": "if motion(19) detected, open the wemo smart plug(17).",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 330,
+    "description": "if motion detected(19), open the camera(18)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 331,
+    "description": "If PIR motion senser(19) detects person, turn on Yeelight Ceiling Lamp (12-13)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2"
+    ]
+  },
+  {
+    "id": 332,
+    "description": "If PIR motion senser(20) detects person, turn on Yeelight Ceiling Lamp (13-14)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 333,
+    "description": "If PIR motion senser(21) detects person, turn on Yeelight Ceiling Lamp (15-16)",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 334,
+    "description": "If person detected by PIR motion(19), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 335,
+    "description": "If person detected by PIR motion(20), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 336,
+    "description": "If person detected by PIR motion(21), dock robot(7)",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "iRobotRoomba"
+    ]
+  },
+  {
+    "id": 337,
+    "description": "If sensor(19) detect person, wyze(18) enable motion detection",
+    "triggers": [
+      "SmartLifePIRmotionsensor1"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 338,
+    "description": "If PIR Motion Sensor(20) detects person, enable Camera(18) motion detection",
+    "triggers": [
+      "SmartLifePIRmotionsensor2"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 339,
+    "description": "After 7 pm, I come to the room, when I open the door, the curtain should be closed",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 340,
+    "description": "if smartThings Door Sensor (4) Any new motion ,then turn on Yeelight (12-16)",
+    "triggers": [
+      "SmartThingsDoorSensor"
+    ],
+    "actions": [
+      "YeelightCeilingLamp1",
+      "YeelightCeilingLamp2",
+      "YeelightCeilingLamp3",
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 341,
+    "description": "if iRobot Roomba(7) Job Complete ,then Wemo Smart Plug（17）Turn off",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WemoSmartPlug"
+    ]
+  },
+  {
+    "id": 342,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 343,
+    "description": "If wemo is open, when curtain(1) or curtain(2) is closed, open the Yeelight Bulb(3)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 344,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 345,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 346,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 347,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 348,
+    "description": "If wemo is open, close curtain(1) and curtain(2)",
+    "triggers": [
+      "WemoSmartPlug"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 349,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 350,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 351,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 352,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 353,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 354,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 355,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 356,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 357,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 358,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 359,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 360,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 361,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 362,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 363,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 364,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 365,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 366,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 367,
+    "description": "if rain(11), close the curtains(1,2)",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 368,
+    "description": "Every 30 minutes check PIR motion sensor21, if 1h since last person detected, close lamp 15\u002616",
+    "triggers": [
+      "SmartLifePIRmotionsensor3"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5",
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 369,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 370,
+    "description": "If iRobot(7) robot started, then wyze(18) disable motion detection",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "WyzeCamera"
+    ]
+  },
+  {
+    "id": 371,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 372,
+    "description": "If it is raining in winter, the curtain should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 373,
+    "description": "If it is raining after 5 pm, the bulb should be open for more light.",
+    "triggers": [
+      "NetatmoWeatherStation"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 374,
+    "description": "if iRobot Roomba(7) Robot Started ,then Mijia Purifier(22) Start",
+    "triggers": [
+      "iRobotRoomba"
+    ],
+    "actions": [
+      "MijiaPurifier"
+    ]
+  },
+  {
+    "id": 375,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 376,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 377,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 378,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 379,
+    "description": "If open Purifier(22), close Curtain (1-2)",
+    "triggers": [
+      "MijiaPurifier"
+    ],
+    "actions": [
+      "MijiaCurtain1",
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 380,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 381,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 382,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 383,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 384,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 385,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 386,
+    "description": "If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 387,
+    "description": "If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 388,
+    "description": "When the curtain is closed, please turn on the bulb.",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightBulb"
+    ]
+  },
+  {
+    "id": 389,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 390,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 391,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 392,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 393,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 394,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 395,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 396,
+    "description": "When turn on the bulb, please close the curtain.",
+    "triggers": [
+      "YeelightBulb"
+    ],
+    "actions": [
+      "MijiaCurtain1"
+    ]
+  },
+  {
+    "id": 397,
+    "description": "If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "YeelightCeilingLamp5"
+    ]
+  },
+  {
+    "id": 398,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 399,
+    "description": "if Curtain(1) open ,then Curtain(2) open",
+    "triggers": [
+      "MijiaCurtain1"
+    ],
+    "actions": [
+      "MijiaCurtain2"
+    ]
+  },
+  {
+    "id": 400,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  },
+  {
+    "id": 401,
+    "description": "If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "YeelightCeilingLamp6"
+    ]
+  },
+  {
+    "id": 402,
+    "description": "if Curtain(2) open ,then turn off Midea Air Conditioner(10)",
+    "triggers": [
+      "MijiaCurtain2"
+    ],
+    "actions": [
+      "MideaAirConditioner"
+    ]
+  }
+]

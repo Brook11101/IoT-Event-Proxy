@@ -1,8 +1,9 @@
-package concurrency.experiment;
+package concurrency.experiment.RealUser.Freemarker;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import concurrency.experiment.DeviceInfo;
+import concurrency.experiment.RuleInfo;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -13,37 +14,27 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * 读取 device.csv、rules.txt，解析后使用 FreeMarker 生成 Main.java
- * @author 魏浩东
- */
 
-public class GenerateConcurrency {
+public class RulesExecGenerator {
 
     public static void main(String[] args) {
         try {
-            // 1. 解析 device.csv
-            List<DeviceInfo> deviceList = parseDeviceFile("src/main/java/concurrency/experiment/RealUser/RealUserDevice.txt");
-
-            // 2. 解析 rules.txt (行中先读name,triggerCount,actionCount，再根据数量读触发/动作设备)
+            // 1. 解析 device
+            List<DeviceInfo> deviceList = parseDeviceFile("src/main/java/concurrency/experiment/RealUser/Freemarker/RealUserDevice.txt");
+            // 2. 解析 rule
             List<RuleInfo> ruleList = parseRulesLog("E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\detector\\matcher\\RealUser\\SynchronizationComparison\\synclogs.txt");
-
             // 3. 初始化 FreeMarker
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_31);
-
-            cfg.setDirectoryForTemplateLoading(new File("src/main/resources/templates"));
+            cfg.setDirectoryForTemplateLoading(new File("src/main/java/concurrency/experiment/RealUser/Freemarker/template"));
             cfg.setDefaultEncoding("UTF-8");
-
             // 4. 获取模板
-            Template template = cfg.getTemplate("main.ftl");
-
+            Template template = cfg.getTemplate("RealUserTemplate.ftl");
             // 5. 构建数据模型
             Map<String, Object> dataModel = new HashMap<>();
             dataModel.put("devices", deviceList);
             dataModel.put("rules", ruleList);
-
             // 6. 生成 Main.java
-            File outFile = new File("src/main/java/concurrency/Main.java");
+            File outFile = new File("src/main/java/concurrency/experiment/RealUser/Freemarker/RealUserRuleExec.java");
             try (Writer out = new FileWriter(outFile)) {
                 template.process(dataModel, out);
             }
@@ -54,22 +45,15 @@ public class GenerateConcurrency {
         }
     }
 
-    /**
-     * 解析 device.csv
-     * 格式:
-     * name,uuidVar
-     * Wemo Smart Plug,plug
-     * ...
-     */
+
+
     private static List<DeviceInfo> parseDeviceFile(String filePath) throws IOException {
         List<DeviceInfo> deviceList = new ArrayList<>();
         try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
             String header = br.readLine(); // 跳过表头 (name,uuidVar)
             String line;
             while ((line = br.readLine()) != null) {
-                // 逗号分隔
                 String[] columns = line.split(",");
-                // [0] = 设备名, [1] = 变量名
                 if (columns.length >= 2) {
                     String name = columns[0].trim();
                     String uuidVar = columns[1].trim();

@@ -1,0 +1,110 @@
+[
+    {
+        "name": "Smoke",
+        "uuidVar": "Smoke"
+    },
+    {
+        "name": "Location",
+        "uuidVar": "Location"
+    },
+    {
+        "name": "WaterLeakage",
+        "uuidVar": "WaterLeakage"
+    },
+    {
+        "name": "MijiaCurtain1",
+        "uuidVar": "MijiaCurtain1"
+    },
+    {
+        "name": "MijiaCurtain2",
+        "uuidVar": "MijiaCurtain2"
+    },
+    {
+        "name": "YeelightBulb",
+        "uuidVar": "YeelightBulb"
+    },
+    {
+        "name": "SmartThingsDoorSensor",
+        "uuidVar": "SmartThingsDoorSensor"
+    },
+    {
+        "name": "MijiaDoorLock",
+        "uuidVar": "MijiaDoorLock"
+    },
+    {
+        "name": "RingDoorbell",
+        "uuidVar": "RingDoorbell"
+    },
+    {
+        "name": "iRobotRoomba",
+        "uuidVar": "iRobotRoomba"
+    },
+    {
+        "name": "AlexaVoiceAssistance",
+        "uuidVar": "AlexaVoiceAssistance"
+    },
+    {
+        "name": "PhilipsHueLight",
+        "uuidVar": "PhilipsHueLight"
+    },
+    {
+        "name": "MideaAirConditioner",
+        "uuidVar": "MideaAirConditioner"
+    },
+    {
+        "name": "NetatmoWeatherStation",
+        "uuidVar": "NetatmoWeatherStation"
+    },
+    {
+        "name": "YeelightCeilingLamp1",
+        "uuidVar": "YeelightCeilingLamp1"
+    },
+    {
+        "name": "YeelightCeilingLamp2",
+        "uuidVar": "YeelightCeilingLamp2"
+    },
+    {
+        "name": "YeelightCeilingLamp3",
+        "uuidVar": "YeelightCeilingLamp3"
+    },
+    {
+        "name": "YeelightCeilingLamp5",
+        "uuidVar": "YeelightCeilingLamp5"
+    },
+    {
+        "name": "YeelightCeilingLamp6",
+        "uuidVar": "YeelightCeilingLamp6"
+    },
+    {
+        "name": "WemoSmartPlug",
+        "uuidVar": "WemoSmartPlug"
+    },
+    {
+        "name": "WyzeCamera",
+        "uuidVar": "WyzeCamera"
+    },
+    {
+        "name": "SmartLifePIRmotionsensor1",
+        "uuidVar": "SmartLifePIRmotionsensor1"
+    },
+    {
+        "name": "SmartLifePIRmotionsensor2",
+        "uuidVar": "SmartLifePIRmotionsensor2"
+    },
+    {
+        "name": "SmartLifePIRmotionsensor3",
+        "uuidVar": "SmartLifePIRmotionsensor3"
+    },
+    {
+        "name": "MijiaPurifier",
+        "uuidVar": "MijiaPurifier"
+    },
+    {
+        "name": "MijiaProjector",
+        "uuidVar": "MijiaProjector"
+    },
+    {
+        "name": "Notification",
+        "uuidVar": "Notification"
+    }
+]

@@ -1,4 +1,4 @@
-package concurrency;
+package concurrency.experiment.RealUser.Freemarker;
 
 import concurrency.scheduling.RuleTree;
 import concurrency.scheduling.TaskNode;
@@ -9,11 +9,11 @@ import java.util.concurrent.Executors;
 
 import static java.lang.Thread.sleep;
 
-public class Main {
+public class RealUserRuleExec {
 public static void main(String[] args) throws InterruptedException {
 RuleTree ruleTree = new RuleTree();
 
-ExecutorService executorService = Executors.newFixedThreadPool(50);
+ExecutorService executorService = Executors.newFixedThreadPool(1);
 
 // ============ 生成设备部分 ============
 <#list devices as dev>
