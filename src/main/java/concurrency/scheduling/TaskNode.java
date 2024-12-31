@@ -66,7 +66,7 @@ public class TaskNode {
         // 持续等待，监听依赖是否为空
         while (!dependencies.isEmpty()){
             try {
-                System.out.println(this.taskName + " 监听依赖中 " + dependencies.toString());
+//                System.out.println(this.taskName + " 监听依赖中 " + dependencies.toString());
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -82,7 +82,7 @@ public class TaskNode {
             }
         });
 
-        System.out.println(this.taskName + " 获取执行设备的写锁成功");
+//        System.out.println(this.taskName + " 获取执行设备的写锁成功");
 
         //进入执行流程，获取锁，然后开始等待窗口
         executeAction(arrivalFlag, timeWindowFlag);
@@ -98,7 +98,7 @@ public class TaskNode {
                 device.getWriteLock().unlock();
             }
         });
-        System.out.println(this.taskName + " 释放执行设备的写锁成功");
+//        System.out.println(this.taskName + " 释放执行设备的写锁成功");
     }
 
     private void generatingDependency() {
@@ -148,7 +148,7 @@ public class TaskNode {
 
     private void executeAction(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
-        System.out.println(this.taskName + " 任务开始等待真实action ");
+//        System.out.println(this.taskName + " 任务开始等待真实action ");
 
         //判断真实action已到达或者等待时间窗口结束
         while (!arrivalFlag.get() && !timeWindowFlag.get()) {
@@ -163,14 +163,14 @@ public class TaskNode {
         //处理真实action到达，开始正常执行
         if (arrivalFlag.get()) {
             try {
-                System.out.println(this.taskName + " 任务收到真实action，开始执行");
+//                System.out.println(this.taskName + " 任务收到真实action，开始执行");
                 execFunction.exec();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } else {
             if (timeWindowFlag.get()) {
-                System.out.println(this.taskName + " 任务超出等待时间窗口，结束执行");
+//                System.out.println(this.taskName + " 任务超出等待时间窗口，结束执行");
                 return;
             }
         }
@@ -201,16 +201,17 @@ public class TaskNode {
 
     public static class SimpleExecFunc implements ExecFunc {
         private final String taskName;
+        private final String description;
 
-        public SimpleExecFunc(String taskName) {
+        public SimpleExecFunc(String taskName,String description) {
             this.taskName = taskName;
+            this.description = description;
         }
 
         @Override
         public void exec() throws InterruptedException {
-            System.out.println(taskName + " 正在执行任务");
-            Thread.sleep(1000);  // 模拟任务执行
-            System.out.println(taskName + "结束执行任务");
+            Thread.sleep(1000);
+            System.out.println(taskName + "执行,"+"description: "+description);
         }
     }
 

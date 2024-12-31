@@ -39,7 +39,7 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
 
         submitTask(executorService, ruleTree, "Rule-${rule.id}",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("${rule.description}"));
+        new TaskNode.SimpleExecFunc("Rule-${rule.id}","${rule.description}"));
         sleep(500);
         }
         </#list>
