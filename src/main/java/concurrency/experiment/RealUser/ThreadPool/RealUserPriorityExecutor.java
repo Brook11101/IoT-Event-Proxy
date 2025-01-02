@@ -7,7 +7,9 @@ import concurrency.scheduling.TaskNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -17,7 +19,8 @@ import java.util.concurrent.*;
  *@Time：下午8:13
  *@Author：魏浩东
  *@Description：基于优先级队列的线程池执行，模拟顺序规则并发->突然意识到好像不需要这里的线程池来做多线程，因为createTask本来就是ThreadStart方式启动了两个线程
- *@Description：这里面线程池的作用是确保任务提交后，立马开始被调度执行。因此，对于runTasks所用的线程池的线程数，是可以为1的，因为对于该线程来说，把任务提交执行（执行线程启动）就算完成，可以去开启下一个了
+ *@Description：这里面线程池的作用是确保任务提交后，立马开始被调度执行。因此，对于runTasks所用的线程池的线程数，是可以为1的，因为对于该线程来说，把任务提交执行（执行线程启动）就算完成，可以去开启下一个了。
+ * @Description：这样做，主要是确保依赖的生成有顺序性。如果依赖生成前后导致了，那就变成后面来的看不见前者了。
  *
  */
 public class RealUserPriorityExecutor {
@@ -112,6 +115,9 @@ public class RealUserPriorityExecutor {
 
     public static void main(String[] args) {
         try {
+            // 清空执行日志
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/concurrency/experiment/RealUser/ThreadPool/json/execution_log.txt", false));
+            writer.close();
             // 运行任务
             runTasks("src/main/java/concurrency/experiment/RealUser/ThreadPool/json/devices.json","src/main/java/concurrency/experiment/RealUser/ThreadPool/json/rules.json");
         } catch (IOException e) {

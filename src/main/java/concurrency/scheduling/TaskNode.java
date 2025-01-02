@@ -1,9 +1,13 @@
 package concurrency.scheduling;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskNode {
@@ -136,7 +140,8 @@ public class TaskNode {
                 }
             });
         }
-        System.out.println(this.taskName + "生成依赖关系完毕 " + this.dependencies.toString() + this.notifies.toString());
+//        *****
+//        System.out.println(this.taskName + "生成依赖关系完毕 " + this.dependencies.toString() + this.notifies.toString());
 
 //        devices.forEach((device) -> {
 //            if (actionDevices.contains(device.getDeviceUUID())) {
@@ -210,8 +215,18 @@ public class TaskNode {
 
         @Override
         public void exec() throws InterruptedException {
-            Thread.sleep(1000);
+            // 这里暂时使用随机时间睡眠模拟规则乱序执行
+            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 3001));
             System.out.println(taskName + "执行,"+"description: "+description);
+            logTaskExecution(taskName, description);
+        }
+
+        private void logTaskExecution(String taskName, String description) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/concurrency/experiment/RealUser/ThreadPool/json/execution_log.txt", true))) {
+                writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-")+1), description));
+            } catch (IOException e) {
+                System.err.println("写入日志失败: " + e.getMessage());
+            }
         }
     }
 

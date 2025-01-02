@@ -1,0 +1,21 @@
+2,If door(5) is locked, after 10sec, turn off the Yeelight Bulb(3)
+1,if door opened(4),notify me.
+5,Every 30 minutes check PIR motion sensor(19), if 1h since last person detected, close lamp (12-13)
+6,Every 30 minutes check PIR motion sensor21, if 1h since last person detected, close lamp 15&16
+3,If motion(18) is detected by Wyze Camera, turn on Philips Hue Light(9) and Mijia Projecter(23)
+11,After 7 pm, I come to the room, when I open the door, the curtain should be closed
+4,If door(5) is unlocked between 11pm-4am, record a short vedio clip(18) and turn on notification(18)
+9,If Camera(18) detects person, open Light(9)
+7,If door(5) unlock, when night, then lamp(14) on
+17,When turn on the bulb, please close the curtain.
+8,If door(5) unlock, then lights(6,8,11,17-18) switch on
+10,If Camera(18) detect person, unmute Projector(23)
+12,if smartThings Door Sensor (4) Any new motion ,then turn on Yeelight (12-16)
+13,if Wyze Camera（18）Smoke alarm is detected ,then  Alexa Voice Assistance（8） alarm
+14,If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on.
+15,If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on
+20,If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)
+16,When the curtain is closed, please turn on the bulb.
+21,if Curtain(2) open ,then turn off Midea Air Conditioner(10)
+18,If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)
+19,if Curtain(1) open ,then Curtain(2) open
