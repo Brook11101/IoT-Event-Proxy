@@ -22,7 +22,7 @@ public class RulesExecGenerator {
             // 1. 解析 device
             List<DeviceInfo> deviceList = parseDeviceFile("src/main/java/concurrency/experiment/RealUser/Freemarker/RealUserDevice.txt");
             // 2. 解析 rule
-            List<RuleInfo> ruleList = parseRulesLog("E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\detector\\matcher\\RealUser\\SynchronizationComparison\\synclogs.txt");
+            List<RuleInfo> ruleList = parseRulesLog("E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\Detector\\Sequence\\RealUser\\CheckSequence\\synclogs.txt");
             // 3. 初始化 FreeMarker
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_31);
             cfg.setDirectoryForTemplateLoading(new File("src/main/java/concurrency/experiment/RealUser/Freemarker/template"));

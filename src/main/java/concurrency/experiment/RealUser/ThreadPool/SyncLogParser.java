@@ -56,6 +56,6 @@ public class SyncLogParser {
     }
 
     public static void main(String[] args) throws IOException {
-        parseRuleLogToJson("E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\detector\\matcher\\RealUser\\SynchronizationComparison\\synclogs.txt", "src/main/java/concurrency/experiment/RealUser/ThreadPool/json/rules.json");
+        parseRuleLogToJson("E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\Detector\\Sequence\\RealUser\\CheckSequence\\synclogs.txt", "src/main/java/concurrency/experiment/RealUser/ThreadPool/json/rules.json");
     }
 }

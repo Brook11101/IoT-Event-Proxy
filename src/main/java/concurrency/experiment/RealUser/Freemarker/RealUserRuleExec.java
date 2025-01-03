@@ -77,29 +77,14 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
     TreeSet<UUID> actionDevices = new TreeSet<>();
 
         // 遍历 triggers
-            triggerDevices.add(Location);
-
-        // 遍历 actions
-            actionDevices.add(iRobotRoomba);
-
-        submitTask(executorService, ruleTree, "Rule-1",
-        triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-1","if i leave home, start the iRobot(7)"));
-        sleep(500);
-        }
-{
-TreeSet<UUID> triggerDevices = new TreeSet<>();
-    TreeSet<UUID> actionDevices = new TreeSet<>();
-
-        // 遍历 triggers
             triggerDevices.add(SmartThingsDoorSensor);
 
         // 遍历 actions
             actionDevices.add(Notification);
 
-        submitTask(executorService, ruleTree, "Rule-2",
+        submitTask(executorService, ruleTree, "Rule-1",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-2","if door opened(4),notify me."));
+        new TaskNode.SimpleExecFunc("Rule-1","if door opened(4),notify me."));
         sleep(500);
         }
 {
@@ -107,18 +92,15 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
     TreeSet<UUID> actionDevices = new TreeSet<>();
 
         // 遍历 triggers
-            triggerDevices.add(Location);
+            triggerDevices.add(NetatmoWeatherStation);
 
         // 遍历 actions
-            actionDevices.add(YeelightCeilingLamp1);
-            actionDevices.add(YeelightCeilingLamp2);
-            actionDevices.add(YeelightCeilingLamp3);
-            actionDevices.add(YeelightCeilingLamp5);
-            actionDevices.add(YeelightCeilingLamp6);
+            actionDevices.add(MijiaCurtain1);
+            actionDevices.add(MijiaCurtain2);
 
-        submitTask(executorService, ruleTree, "Rule-3",
+        submitTask(executorService, ruleTree, "Rule-2",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-3","if i leave home, close all lamps(12,13,14,15,16)"));
+        new TaskNode.SimpleExecFunc("Rule-2","if rain(11), close the curtains(1,2)"));
         sleep(500);
         }
 {
@@ -131,9 +113,9 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
         // 遍历 actions
             actionDevices.add(YeelightBulb);
 
-        submitTask(executorService, ruleTree, "Rule-4",
+        submitTask(executorService, ruleTree, "Rule-3",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-4","If door(5) is locked, after 10sec, turn off the Yeelight Bulb(3)"));
+        new TaskNode.SimpleExecFunc("Rule-3","If door(5) is locked, after 10sec, turn off the Yeelight Bulb(3)"));
         sleep(500);
         }
 {
@@ -147,9 +129,25 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
             actionDevices.add(WyzeCamera);
             actionDevices.add(Notification);
 
+        submitTask(executorService, ruleTree, "Rule-4",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-4","If door(5) is unlocked between 11pm-4am, record a short vedio clip(18) and turn on notification(18)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(AlexaVoiceAssistance);
+
+        // 遍历 actions
+            actionDevices.add(MijiaCurtain1);
+            actionDevices.add(MijiaCurtain2);
+
         submitTask(executorService, ruleTree, "Rule-5",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-5","If door(5) is unlocked between 11pm-4am, record a short vedio clip(18) and turn on notification(18)"));
+        new TaskNode.SimpleExecFunc("Rule-5","Tell Alexa(8) to open/close a certain Curtain(1-2)"));
         sleep(500);
         }
 {
@@ -173,29 +171,15 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
     TreeSet<UUID> actionDevices = new TreeSet<>();
 
         // 遍历 triggers
-            triggerDevices.add(MijiaCurtain1);
+            triggerDevices.add(SmartLifePIRmotionsensor3);
 
         // 遍历 actions
             actionDevices.add(YeelightCeilingLamp5);
+            actionDevices.add(YeelightCeilingLamp6);
 
         submitTask(executorService, ruleTree, "Rule-7",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-7","If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on."));
-        sleep(500);
-        }
-{
-TreeSet<UUID> triggerDevices = new TreeSet<>();
-    TreeSet<UUID> actionDevices = new TreeSet<>();
-
-        // 遍历 triggers
-            triggerDevices.add(MijiaCurtain2);
-
-        // 遍历 actions
-            actionDevices.add(YeelightCeilingLamp6);
-
-        submitTask(executorService, ruleTree, "Rule-8",
-        triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-8","If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on"));
+        new TaskNode.SimpleExecFunc("Rule-7","Every 30 minutes check PIR motion sensor21, if 1h since last person detected, close lamp 15&16"));
         sleep(500);
         }
 {
@@ -208,9 +192,9 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
         // 遍历 actions
             actionDevices.add(YeelightCeilingLamp3);
 
-        submitTask(executorService, ruleTree, "Rule-9",
+        submitTask(executorService, ruleTree, "Rule-8",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-9","If door(5) unlock, when night, then lamp(14) on"));
+        new TaskNode.SimpleExecFunc("Rule-8","If door(5) unlock, when night, then lamp(14) on"));
         sleep(500);
         }
 {
@@ -226,24 +210,9 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
             actionDevices.add(YeelightCeilingLamp5);
             actionDevices.add(YeelightCeilingLamp6);
 
-        submitTask(executorService, ruleTree, "Rule-10",
+        submitTask(executorService, ruleTree, "Rule-9",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-10","If door(5) unlock, then lights(6,8,11,17-18) switch on"));
-        sleep(500);
-        }
-{
-TreeSet<UUID> triggerDevices = new TreeSet<>();
-    TreeSet<UUID> actionDevices = new TreeSet<>();
-
-        // 遍历 triggers
-            triggerDevices.add(MijiaCurtain1);
-
-        // 遍历 actions
-            actionDevices.add(YeelightBulb);
-
-        submitTask(executorService, ruleTree, "Rule-11",
-        triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-11","When the curtain is closed, please turn on the bulb."));
+        new TaskNode.SimpleExecFunc("Rule-9","If door(5) unlock, then lights(6,8,11,17-18) switch on"));
         sleep(500);
         }
 {
@@ -257,9 +226,9 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
             actionDevices.add(MijiaCurtain1);
             actionDevices.add(MijiaCurtain2);
 
-        submitTask(executorService, ruleTree, "Rule-12",
+        submitTask(executorService, ruleTree, "Rule-10",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-12","After 7 pm, I come to the room, when I open the door, the curtain should be closed"));
+        new TaskNode.SimpleExecFunc("Rule-10","After 7 pm, I come to the room, when I open the door, the curtain should be closed"));
         sleep(500);
         }
 {
@@ -267,15 +236,15 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
     TreeSet<UUID> actionDevices = new TreeSet<>();
 
         // 遍历 triggers
-            triggerDevices.add(Location);
+            triggerDevices.add(NetatmoWeatherStation);
 
         // 遍历 actions
             actionDevices.add(MijiaCurtain1);
             actionDevices.add(MijiaCurtain2);
 
-        submitTask(executorService, ruleTree, "Rule-13",
+        submitTask(executorService, ruleTree, "Rule-11",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-13","When I leave the room, the curtain should be closed."));
+        new TaskNode.SimpleExecFunc("Rule-11","If it is raining in winter, the curtain should be open for more light."));
         sleep(500);
         }
 {
@@ -283,60 +252,14 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
     TreeSet<UUID> actionDevices = new TreeSet<>();
 
         // 遍历 triggers
-            triggerDevices.add(Location);
+            triggerDevices.add(NetatmoWeatherStation);
 
         // 遍历 actions
             actionDevices.add(YeelightBulb);
 
-        submitTask(executorService, ruleTree, "Rule-14",
+        submitTask(executorService, ruleTree, "Rule-12",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-14","After we leave the room, about 10 pm everyday, the bulb should be closed."));
-        sleep(500);
-        }
-{
-TreeSet<UUID> triggerDevices = new TreeSet<>();
-    TreeSet<UUID> actionDevices = new TreeSet<>();
-
-        // 遍历 triggers
-            triggerDevices.add(Location);
-
-        // 遍历 actions
-            actionDevices.add(MijiaCurtain1);
-            actionDevices.add(MijiaCurtain2);
-
-        submitTask(executorService, ruleTree, "Rule-15",
-        triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-15","After we leave the room, about 10 pm everyday, the curtain should be closed."));
-        sleep(500);
-        }
-{
-TreeSet<UUID> triggerDevices = new TreeSet<>();
-    TreeSet<UUID> actionDevices = new TreeSet<>();
-
-        // 遍历 triggers
-            triggerDevices.add(Location);
-
-        // 遍历 actions
-            actionDevices.add(WemoSmartPlug);
-
-        submitTask(executorService, ruleTree, "Rule-16",
-        triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-16","After we leave the room, about 10 pm everyday, the smart plug should be closed."));
-        sleep(500);
-        }
-{
-TreeSet<UUID> triggerDevices = new TreeSet<>();
-    TreeSet<UUID> actionDevices = new TreeSet<>();
-
-        // 遍历 triggers
-            triggerDevices.add(Location);
-
-        // 遍历 actions
-            actionDevices.add(WyzeCamera);
-
-        submitTask(executorService, ruleTree, "Rule-17",
-        triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-17","When I leave the room, the camera should be closed."));
+        new TaskNode.SimpleExecFunc("Rule-12","If it is raining after 5 pm, the bulb should be open for more light."));
         sleep(500);
         }
 {
@@ -353,9 +276,294 @@ TreeSet<UUID> triggerDevices = new TreeSet<>();
             actionDevices.add(YeelightCeilingLamp5);
             actionDevices.add(YeelightCeilingLamp6);
 
+        submitTask(executorService, ruleTree, "Rule-13",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-13","if smartThings Door Sensor (4) Any new motion ,then turn on Yeelight (12-16)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp5);
+
+        submitTask(executorService, ruleTree, "Rule-14",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-14","If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp6);
+
+        submitTask(executorService, ruleTree, "Rule-15",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-15","If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp5);
+
+        submitTask(executorService, ruleTree, "Rule-16",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-16","If curtain(1) off, when motion sensor(21) detect person, then Lamp(15) switch on."));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp6);
+
+        submitTask(executorService, ruleTree, "Rule-17",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-17","If  curtain(2) off, when motion sensor(21) detect person, then Lamp(16) switch on"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(YeelightBulb);
+
         submitTask(executorService, ruleTree, "Rule-18",
         triggerDevices, actionDevices,
-        new TaskNode.SimpleExecFunc("Rule-18","if smartThings Door Sensor (4) Any new motion ,then turn on Yeelight (12-16)"));
+        new TaskNode.SimpleExecFunc("Rule-18","When the curtain is closed, please turn on the bulb."));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(MijiaCurtain2);
+
+        submitTask(executorService, ruleTree, "Rule-19",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-19","if Curtain(1) open ,then Curtain(2) open"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(MideaAirConditioner);
+
+        submitTask(executorService, ruleTree, "Rule-20",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-20","if Curtain(2) open ,then turn off Midea Air Conditioner(10)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(YeelightBulb);
+
+        // 遍历 actions
+            actionDevices.add(MijiaCurtain1);
+
+        submitTask(executorService, ruleTree, "Rule-21",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-21","When turn on the bulb, please close the curtain."));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp5);
+
+        submitTask(executorService, ruleTree, "Rule-22",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-22","If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp6);
+
+        submitTask(executorService, ruleTree, "Rule-23",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-23","If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(MijiaCurtain2);
+
+        submitTask(executorService, ruleTree, "Rule-24",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-24","if Curtain(1) open ,then Curtain(2) open"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(MideaAirConditioner);
+
+        submitTask(executorService, ruleTree, "Rule-25",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-25","if Curtain(2) open ,then turn off Midea Air Conditioner(10)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(YeelightBulb);
+
+        // 遍历 actions
+            actionDevices.add(MijiaCurtain1);
+
+        submitTask(executorService, ruleTree, "Rule-26",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-26","When turn on the bulb, please close the curtain."));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp5);
+
+        submitTask(executorService, ruleTree, "Rule-27",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-27","If curtain(1) is open when between 8am and 5pm, turn off Yeelight(15)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp6);
+
+        submitTask(executorService, ruleTree, "Rule-28",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-28","If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain1);
+
+        // 遍历 actions
+            actionDevices.add(MijiaCurtain2);
+
+        submitTask(executorService, ruleTree, "Rule-29",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-29","if Curtain(1) open ,then Curtain(2) open"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(MideaAirConditioner);
+
+        submitTask(executorService, ruleTree, "Rule-30",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-30","if Curtain(2) open ,then turn off Midea Air Conditioner(10)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(YeelightCeilingLamp6);
+
+        submitTask(executorService, ruleTree, "Rule-31",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-31","If curtain(2) is open when between 8am and 5pm, turn off Yeelight(16)"));
+        sleep(500);
+        }
+{
+TreeSet<UUID> triggerDevices = new TreeSet<>();
+    TreeSet<UUID> actionDevices = new TreeSet<>();
+
+        // 遍历 triggers
+            triggerDevices.add(MijiaCurtain2);
+
+        // 遍历 actions
+            actionDevices.add(MideaAirConditioner);
+
+        submitTask(executorService, ruleTree, "Rule-32",
+        triggerDevices, actionDevices,
+        new TaskNode.SimpleExecFunc("Rule-32","if Curtain(2) open ,then turn off Midea Air Conditioner(10)"));
         sleep(500);
         }
 
