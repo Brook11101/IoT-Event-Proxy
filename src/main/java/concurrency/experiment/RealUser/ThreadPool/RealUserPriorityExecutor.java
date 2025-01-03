@@ -116,10 +116,10 @@ public class RealUserPriorityExecutor {
     public static void main(String[] args) {
         try {
             // 清空执行日志
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/concurrency/experiment/RealUser/ThreadPool/json/execution_log.txt", false));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\execution_log.txt", false));
             writer.close();
             // 运行任务
-            runTasks("src/main/java/concurrency/experiment/RealUser/ThreadPool/json/devices.json","src/main/java/concurrency/experiment/RealUser/ThreadPool/json/rules.json");
+            runTasks("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\devices.json","E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\rules.json");
         } catch (IOException e) {
             System.err.println("运行任务失败: " + e.getMessage());
             e.printStackTrace();

@@ -216,13 +216,13 @@ public class TaskNode {
         @Override
         public void exec() throws InterruptedException {
             // 这里暂时使用随机时间睡眠模拟规则乱序执行
-            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 3001));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 1000));
             System.out.println(taskName + "执行,"+"description: "+description);
             logTaskExecution(taskName, description);
         }
 
         private void logTaskExecution(String taskName, String description) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/concurrency/experiment/RealUser/ThreadPool/json/execution_log.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\execution_log.txt", true))) {
                 writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-")+1), description));
             } catch (IOException e) {
                 System.err.println("写入日志失败: " + e.getMessage());
