@@ -1,4 +1,4 @@
-package concurrency;
+package concurrency.scheduling;
 
 import java.util.Objects;
 import java.util.Set;

@@ -1,9 +1,13 @@
-package concurrency;
+package concurrency.scheduling;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskNode {
@@ -54,10 +58,7 @@ public class TaskNode {
 
     public void runTask(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
-        //TODO: 依赖关系生成的时候，必须要加锁
-
-        //TODO: 后来者能看见先来者，但是先来者并不知道后来者，怎么实现通知功能？现有的notify是不全面的，只能通知到能看见的，不能看见的怎么去通知到？
-
+        //依赖关系生成的时候，必须要加锁。但由于生成依赖很快，此时全局加锁消耗忽略不计
         synchronized (TaskNode.class) {
             // 首先将当前 task 的 trigger devices 和 action devices 映射添加进去
             root.addRuleDeviceRelation(triggerDevices, this);
@@ -69,7 +70,7 @@ public class TaskNode {
         // 持续等待，监听依赖是否为空
         while (!dependencies.isEmpty()){
             try {
-                System.out.println(this.taskName + " 监听依赖中 " + dependencies.toString());
+//                System.out.println(this.taskName + " 监听依赖中 " + dependencies.toString());
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -85,7 +86,7 @@ public class TaskNode {
             }
         });
 
-        System.out.println(this.taskName + " 获取执行设备的写锁成功");
+//        System.out.println(this.taskName + " 获取执行设备的写锁成功");
 
         //进入执行流程，获取锁，然后开始等待窗口
         executeAction(arrivalFlag, timeWindowFlag);
@@ -101,7 +102,7 @@ public class TaskNode {
                 device.getWriteLock().unlock();
             }
         });
-        System.out.println(this.taskName + " 释放执行设备的写锁成功");
+//        System.out.println(this.taskName + " 释放执行设备的写锁成功");
     }
 
     private void generatingDependency() {
@@ -139,7 +140,8 @@ public class TaskNode {
                 }
             });
         }
-        System.out.println(this.taskName + "生成依赖关系完毕 " + this.dependencies.toString() + this.notifies.toString());
+//        *****
+//        System.out.println(this.taskName + "生成依赖关系完毕 " + this.dependencies.toString() + this.notifies.toString());
 
 //        devices.forEach((device) -> {
 //            if (actionDevices.contains(device.getDeviceUUID())) {
@@ -151,7 +153,7 @@ public class TaskNode {
 
     private void executeAction(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
-        System.out.println(this.taskName + " 任务开始等待真实action ");
+//        System.out.println(this.taskName + " 任务开始等待真实action ");
 
         //判断真实action已到达或者等待时间窗口结束
         while (!arrivalFlag.get() && !timeWindowFlag.get()) {
@@ -166,14 +168,14 @@ public class TaskNode {
         //处理真实action到达，开始正常执行
         if (arrivalFlag.get()) {
             try {
-                System.out.println(this.taskName + " 任务收到真实action，开始执行");
+//                System.out.println(this.taskName + " 任务收到真实action，开始执行");
                 execFunction.exec();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } else {
             if (timeWindowFlag.get()) {
-                System.out.println(this.taskName + " 任务超出等待时间窗口，结束执行");
+//                System.out.println(this.taskName + " 任务超出等待时间窗口，结束执行");
                 return;
             }
         }
@@ -204,16 +206,27 @@ public class TaskNode {
 
     public static class SimpleExecFunc implements ExecFunc {
         private final String taskName;
+        private final String description;
 
-        public SimpleExecFunc(String taskName) {
+        public SimpleExecFunc(String taskName,String description) {
             this.taskName = taskName;
+            this.description = description;
         }
 
         @Override
         public void exec() throws InterruptedException {
-            System.out.println(taskName + " 正在执行任务");
-            Thread.sleep(1000);  // 模拟任务执行
-            System.out.println(taskName + "结束执行任务");
+            // 这里暂时使用随机时间睡眠模拟规则乱序执行
+            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 1000));
+            System.out.println(taskName + "执行,"+"description: "+description);
+            logTaskExecution(taskName, description);
+        }
+
+        private void logTaskExecution(String taskName, String description) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\execution_log.txt", true))) {
+                writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-")+1), description));
+            } catch (IOException e) {
+                System.err.println("写入日志失败: " + e.getMessage());
+            }
         }
     }
 

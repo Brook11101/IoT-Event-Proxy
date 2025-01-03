@@ -1,4 +1,4 @@
-package concurrency;
+package concurrency.scheduling;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -7,7 +7,7 @@ public class RuleTree {
 
     private RootNode rootNode = new RootNode();
     // 用于模拟真实 action 到达，虚拟 taskNode 结束等待窗口，升级为真实 taskNode
-    private static final double TRUE_ACTION_ARRIVAL_PERCENT = 0.8;
+    private static final double TRUE_ACTION_ARRIVAL_PERCENT = 2;
 
 
     public void createDevice(String deviceName, UUID deviceUUID) {
@@ -46,7 +46,7 @@ public class RuleTree {
                         // 修改第一个原子变量 taskStatus
                         boolean newStatus = Math.random() <= TRUE_ACTION_ARRIVAL_PERCENT;
                         arrivalFlag.set(newStatus);
-                        System.out.println(taskName + " 任务状态修改为: " + newStatus);
+//                        System.out.println(taskName + " 任务状态修改为: " + newStatus);
 
                         // 如果 arrivalFlag 为 true，立即停止线程并设置 timeWindowFlag
                         if (arrivalFlag.get()) {
