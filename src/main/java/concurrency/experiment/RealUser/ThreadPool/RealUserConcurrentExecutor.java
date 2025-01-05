@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import concurrency.experiment.RuleInfo;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -56,7 +53,8 @@ public class RealUserConcurrentExecutor {
         );
 
         // 清空日志文件
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFilePath, false))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(logFilePath, false), "GBK"))) {
             writer.write(""); // 清空内容
         }
 
@@ -76,7 +74,9 @@ public class RealUserConcurrentExecutor {
                         String logEntry = String.format("%d,%s%n", rule.getId(), rule.getDescription());
 
 
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFilePath, true))) {
+                        // 写入日志
+                        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                                new FileOutputStream(logFilePath, true), "GBK"))) {
                             writer.write(logEntry);
                         }
 
