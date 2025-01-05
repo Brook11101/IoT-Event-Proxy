@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import concurrency.experiment.RuleInfo;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -54,7 +55,7 @@ public class RealUserConcurrentExecutor {
 
         // 清空日志文件
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(logFilePath, false), "GBK"))) {
+                new FileOutputStream(logFilePath, false), "UTF-8"))) {
             writer.write(""); // 清空内容
         }
 
@@ -76,7 +77,7 @@ public class RealUserConcurrentExecutor {
 
                         // 写入日志
                         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                                new FileOutputStream(logFilePath, true), "GBK"))) {
+                                new FileOutputStream(logFilePath, true), "UTF-8"))) {
                             writer.write(logEntry);
                         }
 

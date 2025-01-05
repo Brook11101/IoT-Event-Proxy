@@ -1,8 +1,6 @@
 package concurrency.scheduling;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -224,12 +222,15 @@ public class TaskNode {
         }
 
         private void logTaskExecution(String taskName, String description) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\execution_log.txt", true))) {
-                writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-")+1), description));
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\execution_log.txt", true), "UTF-8"))) {
+                writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-") + 1), description));
             } catch (IOException e) {
                 System.err.println("写入日志失败: " + e.getMessage());
             }
         }
+
     }
 
 }
