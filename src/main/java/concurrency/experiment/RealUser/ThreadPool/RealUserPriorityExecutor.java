@@ -103,6 +103,12 @@ public class RealUserPriorityExecutor {
                     ruleTree.createTask("Rule-"+rule.getId(), triggerDevices, actionDevices,
                             new TaskNode.SimpleExecFunc("Rule-"+rule.getId(),rule.getDescription()));
 
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 } catch (Exception e) {
                     System.err.println("任务执行失败: " + e.getMessage());
                     e.printStackTrace();

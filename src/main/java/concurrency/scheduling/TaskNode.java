@@ -58,6 +58,8 @@ public class TaskNode {
 
     public void runTask(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
+        System.out.println(this.taskName + "被启动");
+
         //依赖关系生成的时候，必须要加锁。但由于生成依赖很快，此时全局加锁消耗忽略不计
         synchronized (TaskNode.class) {
             // 首先将当前 task 的 trigger devices 和 action devices 映射添加进去
@@ -141,7 +143,7 @@ public class TaskNode {
             });
         }
 //        *****
-//        System.out.println(this.taskName + "生成依赖关系完毕 " + this.dependencies.toString() + this.notifies.toString());
+        System.out.println(this.taskName + "生成依赖关系完毕 " + this.dependencies.toString() + this.notifies.toString());
 
 //        devices.forEach((device) -> {
 //            if (actionDevices.contains(device.getDeviceUUID())) {
