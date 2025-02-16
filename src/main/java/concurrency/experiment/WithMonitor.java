@@ -14,7 +14,7 @@ import java.util.concurrent.*;
  * @Description: 基于优先级队列的线程池执行，确保规则任务按优先级提交，并保证设备依赖生成的顺序性。
  *               线程池线程数设置为 1，确保任务按提交顺序执行，不影响任务内部的多线程逻辑。
  */
-public class ExecutorWithMonitor {
+public class WithMonitor {
 
     /**
      * 任务包装类，支持基于优先级的执行顺序
@@ -77,16 +77,6 @@ public class ExecutorWithMonitor {
         } finally {
             // 关闭线程池
             executorService.shutdown();
-            try {
-                if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                    System.err.println("任务执行超时，强制关闭线程池...");
-                    executorService.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                System.err.println("线程池终止异常: " + e.getMessage());
-                executorService.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
         }
     }
 
@@ -121,7 +111,7 @@ public class ExecutorWithMonitor {
             ruleTree.createTask("Rule-" + rule.getId(), triggerDevices, actionDevices,
                     new TaskNode.SimpleExecFunc("Rule-" + rule.getId(), rule.getDescription()));
 
-            Thread.sleep(1);
+            Thread.sleep(100);
         } catch (Exception e) {
             System.err.println("规则执行失败 (Rule-" + rule.getId() + "): " + e.getMessage());
             e.printStackTrace();

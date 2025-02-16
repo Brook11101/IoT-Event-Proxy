@@ -10,6 +10,7 @@ public class DeviceNode {
 
     // 使用公平锁实现，同一个device lock下的task node保持FIFO顺序竞争
     // 这里使用了reentrantlock的read-write lock，提高代码的执行效率
+
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
     private RootNode root;
 

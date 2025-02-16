@@ -44,6 +44,11 @@ public class StaticRuleParser {
      */
     private static void processLogLine(String logLine, List<RuleInfo> rules, Gson gson) {
         try {
+            // 跳过空行
+            if (logLine == null || logLine.isEmpty()) {
+                return;
+            }
+
             // 清理单引号，确保 JSON 格式正确
             String cleanedLine = logLine.replace("'", "\"");
 
@@ -111,9 +116,10 @@ public class StaticRuleParser {
     }
 
     public static void main(String[] args) {
-        String logFilePath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\Detector\\Sequence\\RealUser\\CheckSequence\\synclogs.txt";
+        String logFilePath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Detector\\Synchronizer\\Monitor\\Data\\static_logs.txt";
         String outputJsonPath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\StaticRules.json";
 
         parseRuleLogToJson(logFilePath, outputJsonPath);
+        System.out.println("规则解析完成");
     }
 }

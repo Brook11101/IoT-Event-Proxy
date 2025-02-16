@@ -23,7 +23,8 @@ public class TaskNode {
     private TreeSet<UUID> triggerDevices;
     //Action 设备集合
     private TreeSet<UUID> actionDevices;
-    //根据Trigger推理出规则触发的时间
+
+    //根据Trigger推理出规则触发的时间，即TaskNode创建时间
     private Long timeStamp;
     //规则执行内容
     private ExecFunc execFunction;
@@ -68,25 +69,18 @@ public class TaskNode {
 
         // 生成关系完后就应该释放掉同步锁
         // 持续等待，监听依赖是否为空
-        while (!dependencies.isEmpty()){
-            try {
-//                System.out.println(this.taskName + " 监听依赖中 " + dependencies.toString());
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        };
+        while (!dependencies.isEmpty()) ;
 
+//没有使用锁，使用了LLSC
 
-        //获取设备写锁，保证action的原子性
-        Set<DeviceNode> devices = root.getDeviceNodes();
-        devices.forEach((device) -> {
-            if (actionDevices.contains(device.getDeviceUUID())) {
-                device.getWriteLock().lock();
-            }
-        });
-
-//        System.out.println(this.taskName + " 获取执行设备的写锁成功");
+//        //获取设备写锁，保证action的原子性
+//        Set<DeviceNode> devices = root.getDeviceNodes();
+//        devices.forEach((device) -> {
+//            if (actionDevices.contains(device.getDeviceUUID())) {
+//                device.getWriteLock().lock();
+//            }
+//        });
+//      System.out.println(this.taskName + " 获取执行设备的写锁成功");
 
         //进入执行流程，获取锁，然后开始等待窗口
         executeAction(arrivalFlag, timeWindowFlag);
@@ -97,11 +91,11 @@ public class TaskNode {
         //在执行完成后将trigger devices与该 taskNode移除
         root.removeRuleDeviceRelation(triggerDevices, this);
 
-        devices.forEach((device) -> {
-            if (actionDevices.contains(device.getDeviceUUID())) {
-                device.getWriteLock().unlock();
-            }
-        });
+//        devices.forEach((device) -> {
+//            if (actionDevices.contains(device.getDeviceUUID())) {
+//                device.getWriteLock().unlock();
+//            }
+//        });
 //        System.out.println(this.taskName + " 释放执行设备的写锁成功");
     }
 
@@ -208,23 +202,24 @@ public class TaskNode {
         private final String taskName;
         private final String description;
 
-        public SimpleExecFunc(String taskName,String description) {
+        public SimpleExecFunc(String taskName, String description) {
             this.taskName = taskName;
             this.description = description;
         }
 
         @Override
         public void exec() throws InterruptedException {
-            // 这里暂时使用随机时间睡眠模拟规则乱序执行
-            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 1000));
-            System.out.println(taskName + "执行,"+"description: "+description);
+            // 模拟命令的重新转发时间
+            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 2000));
+
+            System.out.println(taskName + "执行," + "description: " + description);
             logTaskExecution(taskName, description);
         }
 
         private void logTaskExecution(String taskName, String description) {
             try (BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(
-                            new FileOutputStream("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\RealUser\\ThreadPool\\json\\execution_log.txt", true), "UTF-8"))) {
+                            new FileOutputStream("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\WithMonitorLog.txt", true), "UTF-8"))) {
                 writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-") + 1), description));
             } catch (IOException e) {
                 System.err.println("写入日志失败: " + e.getMessage());

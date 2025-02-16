@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  * @Author: 魏浩东
  * @Description: 模拟不使用调度的多线程并发执行，使用优先级队列确保任务按规则 ID 顺序调度
  */
-public class ExecutorWithOutMonitor {
+public class WithOutMonitor {
 
     /**
      * 任务包装类，支持基于优先级的执行顺序
@@ -69,16 +69,6 @@ public class ExecutorWithOutMonitor {
         } finally {
             // 关闭线程池
             executorService.shutdown();
-            try {
-                if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                    System.err.println("任务执行超时，强制关闭线程池...");
-                    executorService.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                System.err.println("线程池终止异常: " + e.getMessage());
-                executorService.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
         }
     }
 
