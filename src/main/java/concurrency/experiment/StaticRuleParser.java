@@ -2,7 +2,6 @@ package concurrency.experiment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -10,7 +9,7 @@ import java.util.*;
 /**
  * @Date: 2025/1/5
  * @Author: 魏浩东
- * @Description: 解析规则日志，将其转换为 JSON 格式，以便后续处理
+ * @Description: 解析规则日志，并转换为 JSON（使用嵌套数组表示不同轮次）
  */
 public class StaticRuleParser {
 
@@ -20,54 +19,79 @@ public class StaticRuleParser {
      * @param outputJsonPath 输出 JSON 文件路径
      */
     public static void parseRuleLogToJson(String logFilePath, String outputJsonPath) {
-        List<RuleInfo> rules = new ArrayList<>();
+        List<List<RuleInfo>> allRounds = new ArrayList<>();  // 存储所有轮次
+        List<RuleInfo> currentRound = new ArrayList<>();     // 当前轮次
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(logFilePath), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
-                processLogLine(line, rules, gson);
+                line = line.trim();
+
+                // 如果是空行，表示新轮次
+                if (line.isEmpty()) {
+                    if (!currentRound.isEmpty()) {
+                        allRounds.add(new ArrayList<>(currentRound));  // 存储当前轮次
+                        currentRound.clear();  // 清空，准备下一轮
+                    }
+                    continue;
+                }
+
+                // 处理规则行
+                RuleInfo rule = processLogLine(line, gson);
+                if (rule != null) {
+                    currentRound.add(rule);
+                }
             }
+
+            // 存储最后一轮数据（如果存在）
+            if (!currentRound.isEmpty()) {
+                allRounds.add(currentRound);
+            }
+
         } catch (IOException e) {
             System.err.println("读取日志文件失败: " + e.getMessage());
             e.printStackTrace();
         }
 
-        writeRulesToJson(rules, outputJsonPath, gson);
+        // 写入 JSON 文件
+        writeRulesToJson(allRounds, outputJsonPath, gson);
     }
 
     /**
-     * 解析单行日志，并添加到规则列表
+     * 解析单行日志，转换为 RuleInfo 对象
      * @param logLine 日志行
-     * @param rules 规则列表
      * @param gson Gson 实例
+     * @return 解析后的 RuleInfo（若解析失败，返回 null）
      */
-    private static void processLogLine(String logLine, List<RuleInfo> rules, Gson gson) {
+    private static RuleInfo processLogLine(String logLine, Gson gson) {
         try {
-            // 跳过空行
-            if (logLine == null || logLine.isEmpty()) {
-                return;
-            }
-
             // 清理单引号，确保 JSON 格式正确
             String cleanedLine = logLine.replace("'", "\"");
 
             // 解析 JSON 数据
             Map<String, Object> ruleData = gson.fromJson(cleanedLine, Map.class);
+            if (ruleData == null || !ruleData.containsKey("id") || !ruleData.containsKey("description")) {
+                System.err.println("解析失败: 规则缺少必要字段 " + logLine);
+                return null;
+            }
+
             int id = ((Double) ruleData.get("id")).intValue();
             String description = ((String) ruleData.get("description")).replace("\\&", "&");
 
             List<String> triggers = extractTriggers(ruleData);
             List<String> actions = extractActions(ruleData);
 
-            // 创建 RuleInfo 并加入规则列表
+            // 创建 RuleInfo 并返回
             RuleInfo rule = new RuleInfo(id, description);
             rule.getTriggers().addAll(triggers);
             rule.getActions().addAll(actions);
-            rules.add(rule);
+            return rule;
+
         } catch (Exception e) {
-            System.err.println("解析日志行失败: " + logLine);
-            e.printStackTrace();
+            System.err.println("解析日志行失败: " + logLine + "，错误信息: " + e.getMessage());
+            return null;
         }
     }
 
@@ -102,13 +126,13 @@ public class StaticRuleParser {
 
     /**
      * 将规则列表写入 JSON 文件
-     * @param rules 规则列表
+     * @param allRounds 嵌套数组格式的规则列表
      * @param outputJsonPath 输出 JSON 文件路径
      * @param gson Gson 实例
      */
-    private static void writeRulesToJson(List<RuleInfo> rules, String outputJsonPath, Gson gson) {
+    private static void writeRulesToJson(List<List<RuleInfo>> allRounds, String outputJsonPath, Gson gson) {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputJsonPath), StandardCharsets.UTF_8))) {
-            gson.toJson(rules, writer);
+            gson.toJson(allRounds, writer);
         } catch (IOException e) {
             System.err.println("写入 JSON 文件失败: " + e.getMessage());
             e.printStackTrace();

@@ -9,55 +9,92 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * @Date: 2024/12/30
+ * @Date: 2025/2/17
  * @Author: 魏浩东
- * @Description: 基于优先级队列的线程池执行，确保规则任务按优先级提交，并保证设备依赖生成的顺序性。
- *               线程池线程数设置为 1，确保任务按提交顺序执行，不影响任务内部的多线程逻辑。
+ * @Description: 按轮次执行任务，确保上一轮所有任务执行完成后，下一轮才启动。
  */
 public class WithMonitor {
 
     /**
-     * 任务包装类，支持基于优先级的执行顺序
+     * 任务包装类，支持优先级调度。
+     * 这里使用 Callable 返回本次任务创建的内部线程集合。
      */
-    public static class PriorityRunnable implements Runnable, Comparable<PriorityRunnable> {
+    public static class PriorityCallable implements Callable<List<Thread>>, Comparable<PriorityCallable> {
         private final int priority;
-        private final Runnable task;
+        private final Callable<List<Thread>> task;
 
-        public PriorityRunnable(int priority, Runnable task) {
+        public PriorityCallable(int priority, Callable<List<Thread>> task) {
             this.priority = priority;
             this.task = task;
         }
 
         @Override
-        public void run() {
-            task.run();
+        public List<Thread> call() throws Exception {
+            return task.call();
         }
 
         @Override
-        public int compareTo(PriorityRunnable other) {
-            return Integer.compare(this.priority, other.priority); // 规则 ID 越小，优先级越高
+        public int compareTo(PriorityCallable other) {
+            return Integer.compare(this.priority, other.priority); // 规则ID越小，优先级越高
+        }
+
+        public int getPriority() {
+            return priority;
         }
     }
 
     /**
-     * 运行规则任务
+     * 自定义 FutureTask，实现 Comparable 接口，用于在 PriorityBlockingQueue 中排序。
+     */
+    public static class PriorityFutureTask<V> extends FutureTask<V> implements Comparable<PriorityFutureTask<V>> {
+        private final int priority;
+
+        public PriorityFutureTask(PriorityCallable callable) {
+            super((Callable<V>) callable);
+            this.priority = callable.getPriority();
+        }
+
+        @Override
+        public int compareTo(PriorityFutureTask<V> o) {
+            return Integer.compare(this.priority, o.priority);
+        }
+    }
+
+    /**
+     * 自定义线程池，重写 newTaskFor 方法以返回自定义的 PriorityFutureTask。
+     */
+    public static class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
+        public PriorityThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                          PriorityBlockingQueue<Runnable> workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        @Override
+        protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+            if (callable instanceof PriorityCallable) {
+                return new PriorityFutureTask<>((PriorityCallable) callable);
+            }
+            return super.newTaskFor(callable);
+        }
+    }
+
+    /**
+     * 运行规则任务（按轮次）。
+     *
      * @param devicesFilePath 设备数据文件路径
-     * @param rulesFilePath 规则数据文件路径
+     * @param rulesFilePath   规则数据文件路径
      */
     public static void runTasks(String devicesFilePath, String rulesFilePath) {
         RuleTree ruleTree = new RuleTree();
-        ThreadPoolExecutor executorService = new ThreadPoolExecutor(
-                1, 1, 60L, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
-
         Gson gson = new Gson();
 
         try (
                 FileReader deviceReader = new FileReader(devicesFilePath);
                 FileReader ruleReader = new FileReader(rulesFilePath)
         ) {
-            // 解析 JSON 文件
+            // 解析设备和规则
             List<DeviceInfo> devices = gson.fromJson(deviceReader, new TypeToken<List<DeviceInfo>>() {}.getType());
-            List<RuleInfo> rules = gson.fromJson(ruleReader, new TypeToken<List<RuleInfo>>() {}.getType());
+            List<List<RuleInfo>> ruleRounds = gson.fromJson(ruleReader, new TypeToken<List<List<RuleInfo>>>() {}.getType());
 
             // 注册设备并构建设备映射表
             Map<String, UUID> deviceMap = new HashMap<>();
@@ -67,26 +104,73 @@ public class WithMonitor {
                 deviceMap.put(device.getName(), deviceUUID);
             }
 
-            // 按优先级提交任务
-            for (RuleInfo rule : rules) {
-                executorService.execute(new PriorityRunnable(rule.getId(), () -> processRule(rule, deviceMap, ruleTree)));
+            // 按轮次执行任务
+            for (int round = 0; round < ruleRounds.size(); round++) {
+                List<RuleInfo> rules = ruleRounds.get(round);
+
+                System.out.println("开始执行第 " + (round + 1) + " 轮任务，任务数量：" + rules.size());
+
+                // 使用自定义的 PriorityThreadPoolExecutor
+                PriorityThreadPoolExecutor executorService = new PriorityThreadPoolExecutor(
+                        1, 1, 60L, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
+
+                List<Future<List<Thread>>> futures = new ArrayList<>();
+
+                for (RuleInfo rule : rules) {
+                    PriorityCallable callableTask = new PriorityCallable(rule.getId(), () -> processRule(rule, deviceMap, ruleTree));
+                    Future<List<Thread>> future = executorService.submit(callableTask);
+                    futures.add(future);
+                }
+
+                // 关闭线程池并等待所有任务执行完成
+                executorService.shutdown();
+                try {
+                    executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                // 收集所有内部线程
+                List<Thread> allThreads = new ArrayList<>();
+                for (Future<List<Thread>> future : futures) {
+                    try {
+                        List<Thread> threads = future.get();
+                        if (threads != null) {
+                            allThreads.addAll(threads);
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 等待所有内部线程结束
+                for (Thread thread : allThreads) {
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+                System.out.println("第 " + (round + 1) + " 轮任务全部完成。");
             }
+
         } catch (IOException e) {
-            System.err.println("读取设备或规则文件失败: " + e.getMessage());
+            System.err.println("读取文件或执行任务失败: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            // 关闭线程池
-            executorService.shutdown();
         }
     }
 
     /**
-     * 处理规则任务
-     * @param rule 规则信息
+     * 处理规则任务，将创建的内部线程返回给调用者。
+     *
+     * @param rule      规则信息
      * @param deviceMap 设备映射表
-     * @param ruleTree 规则树
+     * @param ruleTree  规则树
+     * @return 该规则任务内部新建的线程列表
      */
-    private static void processRule(RuleInfo rule, Map<String, UUID> deviceMap, RuleTree ruleTree) {
+    private static List<Thread> processRule(RuleInfo rule, Map<String, UUID> deviceMap, RuleTree ruleTree) {
+        List<Thread> threads = new ArrayList<>();
         try {
             TreeSet<UUID> triggerDevices = new TreeSet<>();
             TreeSet<UUID> actionDevices = new TreeSet<>();
@@ -107,15 +191,18 @@ public class WithMonitor {
                 }
             }
 
-            // 创建任务并提交
-            ruleTree.createTask("Rule-" + rule.getId(), triggerDevices, actionDevices,
+            // 创建任务并获取内部线程
+            List<Thread> createdThreads = ruleTree.createTask("Rule-" + rule.getId(), triggerDevices, actionDevices,
                     new TaskNode.SimpleExecFunc("Rule-" + rule.getId(), rule.getDescription()));
+            threads.addAll(createdThreads);
 
+            // 模拟任务执行间隔
             Thread.sleep(100);
         } catch (Exception e) {
             System.err.println("规则执行失败 (Rule-" + rule.getId() + "): " + e.getMessage());
             e.printStackTrace();
         }
+        return threads;
     }
 
     public static void main(String[] args) {

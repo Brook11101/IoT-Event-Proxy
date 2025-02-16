@@ -1,33 +1,34 @@
 package concurrency.scheduling;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RuleTree {
 
     private RootNode rootNode = new RootNode();
-    // 用于模拟真实 action 到达，虚拟 taskNode 结束等待窗口，升级为真实 taskNode
+    // 模拟真实 action 到达的概率
     private static final double TRUE_ACTION_ARRIVAL_PERCENT = 1;
-
 
     public void createDevice(String deviceName, UUID deviceUUID) {
         DeviceNode device = new DeviceNode(rootNode, deviceUUID, deviceName);
         rootNode.addDeviceNode(device);
     }
 
-    // 添加虚拟 TaskNode，并使用时间窗口
-    // 参数说明：该规则名，规则的 trigger 设备，规则的 action 设备，规则的执行动作
-    public void createTask(String taskName, TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, TaskNode.SimpleExecFunc execFunc) {
+    /**
+     * 创建任务：内部启动任务线程和监听线程，并返回这两个线程的集合。
+     * @param taskName 任务名称
+     * @param triggerDevices 触发设备集合
+     * @param actionDevices 动作设备集合
+     * @param execFunc 任务执行逻辑
+     * @return 内部新建的线程列表（包括任务线程和监听线程）
+     */
+    public List<Thread> createTask(String taskName, TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, TaskNode.SimpleExecFunc execFunc) {
+        List<Thread> threadList = new ArrayList<>();
 
-        // 使用内部类封装任务及其action到达逻辑
+        // 内部类封装任务及其 action 到达逻辑
         class TaskWithListener {
             private final Thread taskThread;
             private final Thread listenerThread;
-
-            //任务线程和通知线程应该是独立的，任务线程应该先启动，然后在等待窗口内等待监听者通知
-//          所以可以理解为TA锁还是采用一次性预分配申请的模式，用于实现Trigger与Action的互斥安全。
-//          等待时间窗口长度应该为5s
 
             TaskWithListener(String taskName, TreeSet<UUID> triggerDevices, TreeSet<UUID> actionDevices, TaskNode.SimpleExecFunc execFunc) {
                 final AtomicBoolean arrivalFlag = new AtomicBoolean(false);
@@ -35,33 +36,29 @@ public class RuleTree {
 
                 taskThread = new Thread(() -> {
                     TaskNode taskNode = new TaskNode(rootNode, UUID.randomUUID(), taskName, triggerDevices, actionDevices, execFunc);
-                    //开始执行任务
+                    // 开始执行任务
                     taskNode.runTask(arrivalFlag, timeWindowFlag);
                 });
 
                 listenerThread = new Thread(() -> {
                     try {
-                        // 模拟收到真实action的试验，设置在2-6s
+                        // 模拟 action 到达的延迟
                         Random random = new Random();
                         long randomDelay = random.nextInt(5) * 1000;
                         Thread.sleep(randomDelay);
 
-                        // 修改第一个原子变量 taskStatus，随机action是否真的到达
                         boolean newStatus = Math.random() <= TRUE_ACTION_ARRIVAL_PERCENT;
                         arrivalFlag.set(newStatus);
-//                        System.out.println(taskName + " 任务状态修改为: " + newStatus);
 
-                        // 如果 arrivalFlag 为 true，立即停止线程并设置 timeWindowFlag
+                        // 如果 action 已到达，立即设置等待窗口结束标志并退出
                         if (arrivalFlag.get()) {
                             timeWindowFlag.set(true);
-                            return; // 退出当前线程
+                            return;
                         }
 
-                        // 如果 arrivalFlag 为 false，模拟消耗完剩下的等待时间
+                        // 如果 action 未到达，则等待剩余时间后结束等待窗口
                         long remainingTime = 5000 - randomDelay;
-                        Thread.sleep(remainingTime); // 剩余时间
-
-                        // 等待完毕后修改 stopFlag 为 true，结束线程
+                        Thread.sleep(remainingTime);
                         timeWindowFlag.set(true);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -71,19 +68,23 @@ public class RuleTree {
 
             void start() {
                 taskThread.start();
-
-                // 防止 listenerThread 线程先执行
+                // 防止 listenerThread 先于任务线程执行
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    Thread.currentThread().interrupt();
                 }
-
                 listenerThread.start();
+            }
+
+            List<Thread> getThreads() {
+                return Arrays.asList(taskThread, listenerThread);
             }
         }
 
         TaskWithListener taskWithListener = new TaskWithListener(taskName, triggerDevices, actionDevices, execFunc);
         taskWithListener.start();
+        threadList.addAll(taskWithListener.getThreads());
+        return threadList;
     }
 }
