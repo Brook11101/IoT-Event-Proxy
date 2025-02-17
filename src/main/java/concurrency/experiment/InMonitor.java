@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  * @Author: 魏浩东
  * @Description: 按轮次执行任务，确保上一轮所有任务执行完成后，下一轮才启动。
  */
-public class WithMonitor {
+public class InMonitor {
 
     /**
      * 运行规则任务（按轮次）。
@@ -146,7 +146,7 @@ public class WithMonitor {
     }
 
     public static void main(String[] args) {
-        String executionLogPath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\WithMonitorLog.txt";
+        String executionLogPath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\InMonitorLog.txt";
         String devicesPath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\Device.json";
         String rulesPath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\StaticRules.json";
 

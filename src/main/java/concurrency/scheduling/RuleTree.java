@@ -45,7 +45,7 @@ public class RuleTree {
                         // 模拟 action 到达的延迟
                         Random random = new Random();
                         long randomDelay = random.nextInt(5) * 1000;
-                        Thread.sleep(randomDelay);
+//                        Thread.sleep(randomDelay);
 
                         boolean newStatus = Math.random() <= TRUE_ACTION_ARRIVAL_PERCENT;
                         arrivalFlag.set(newStatus);

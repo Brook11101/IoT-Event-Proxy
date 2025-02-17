@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  * @Author: 魏浩东
  * @Description: 模拟不使用调度的多线程并发执行，使用优先级队列确保任务按规则 ID 顺序调度
  */
-public class WithOutMonitor {
+public class OutMonitor {
 
     /**
      * 运行并发任务
@@ -107,13 +107,15 @@ public class WithOutMonitor {
         Thread taskThread = new Thread(() -> {
             try {
                 System.out.println("启动: Rule-" + rule.getId());
+                long startTimeStamp = System.currentTimeMillis();
 
                 // 模拟任务随机延迟 1000-2000ms，模拟乱序流量
                 int sleepTime = ThreadLocalRandom.current().nextInt(1000, 2000);
                 Thread.sleep(sleepTime);
 
+                String time = String.valueOf(System.currentTimeMillis() - startTimeStamp);
                 // 构造日志内容
-                String logEntry = String.format("%d,%s%n", rule.getId(), rule.getDescription());
+                String logEntry = String.format("%d,%s%n", rule.getId(), time);
 
                 // 写入日志文件
                 try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
@@ -121,8 +123,8 @@ public class WithOutMonitor {
                     writer.write(logEntry);
                 }
 
-                System.out.printf("规则已执行: Rule-%d, 描述: %s",
-                        rule.getId(), rule.getDescription());
+                System.out.printf("规则已执行: Rule-%d, 时间: %s",
+                        rule.getId(), time);
             } catch (InterruptedException e) {
                 System.err.println("线程被中断: Rule-" + rule.getId());
                 Thread.currentThread().interrupt();
@@ -144,7 +146,7 @@ public class WithOutMonitor {
 
     public static void main(String[] args) {
         String rulesFilePath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\StaticRules.json";
-        String logFilePath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\WithOutMonitorLog.txt";
+        String logFilePath = "E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\OutMonitorLog.txt";
 
         System.out.println("开始直接并发执行规则...");
         runConcurrentTasks(rulesFilePath, logFilePath);

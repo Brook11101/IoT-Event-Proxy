@@ -58,6 +58,7 @@ public class TaskNode {
     public void runTask(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
 
         System.out.println(this.taskName + "被启动");
+        long startTimestamp = System.currentTimeMillis();
 
         //依赖关系生成的时候，必须要加锁。但由于生成依赖很快，此时全局加锁消耗忽略不计
         synchronized (TaskNode.class) {
@@ -83,7 +84,7 @@ public class TaskNode {
 //      System.out.println(this.taskName + " 获取执行设备的写锁成功");
 
         //进入执行流程，获取锁，然后开始等待窗口
-        executeAction(arrivalFlag, timeWindowFlag);
+        executeAction(arrivalFlag, timeWindowFlag, startTimestamp);
         hasFinished.set(true);
 
         //执行完通知其他TaskNode，同时将自己摘除
@@ -145,7 +146,7 @@ public class TaskNode {
 //        System.out.println(this.taskName + "释放了相关设备的读锁 ");
     }
 
-    private void executeAction(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag) {
+    private void executeAction(AtomicBoolean arrivalFlag, AtomicBoolean timeWindowFlag, long startTimestamp) {
 
 //        System.out.println(this.taskName + " 任务开始等待真实action ");
 
@@ -163,7 +164,7 @@ public class TaskNode {
         if (arrivalFlag.get()) {
             try {
 //                System.out.println(this.taskName + " 任务收到真实action，开始执行");
-                execFunction.exec();
+                execFunction.exec(startTimestamp);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -195,7 +196,7 @@ public class TaskNode {
 
 
     public interface ExecFunc {
-        void exec() throws InterruptedException;
+        void exec(long startTimestamp) throws InterruptedException;
     }
 
     public static class SimpleExecFunc implements ExecFunc {
@@ -208,24 +209,23 @@ public class TaskNode {
         }
 
         @Override
-        public void exec() throws InterruptedException {
+        public void exec(long startTimestamp) throws InterruptedException {
             // 模拟命令的重新转发时间
             Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 2000));
-
-            System.out.println(taskName + "执行," + "description: " + description);
-            logTaskExecution(taskName, description);
+            String time = String.valueOf(System.currentTimeMillis() - startTimestamp);
+            System.out.println(taskName + "执行," + "执行时长: " + time);
+            logTaskExecution(taskName, time);
         }
 
-        private void logTaskExecution(String taskName, String description) {
+        private void logTaskExecution(String taskName, String time) {
             try (BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(
-                            new FileOutputStream("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\WithMonitorLog.txt", true), "UTF-8"))) {
-                writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-") + 1), description));
+                            new FileOutputStream("E:\\研究生信息收集\\论文材料\\IoT-Event-Proxy\\src\\main\\java\\concurrency\\experiment\\data\\InMonitorLog.txt", true), "UTF-8"))) {
+                writer.write(String.format("%s,%s%n", taskName.substring(taskName.lastIndexOf("-") + 1), time));
             } catch (IOException e) {
                 System.err.println("写入日志失败: " + e.getMessage());
             }
         }
-
     }
 
 }
