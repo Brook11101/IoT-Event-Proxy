@@ -4,9 +4,12 @@ import concurrency.scheduling.RuleTree;
 import concurrency.scheduling.TaskNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import concurrency.utils.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
+
 
 /**
  * @Date: 2025/2/17
@@ -14,69 +17,6 @@ import java.util.concurrent.*;
  * @Description: 按轮次执行任务，确保上一轮所有任务执行完成后，下一轮才启动。
  */
 public class WithMonitor {
-
-    /**
-     * 任务包装类，支持优先级调度。
-     * 这里使用 Callable 返回本次任务创建的内部线程集合。
-     */
-    public static class PriorityCallable implements Callable<List<Thread>>, Comparable<PriorityCallable> {
-        private final int priority;
-        private final Callable<List<Thread>> task;
-
-        public PriorityCallable(int priority, Callable<List<Thread>> task) {
-            this.priority = priority;
-            this.task = task;
-        }
-
-        @Override
-        public List<Thread> call() throws Exception {
-            return task.call();
-        }
-
-        @Override
-        public int compareTo(PriorityCallable other) {
-            return Integer.compare(this.priority, other.priority); // 规则ID越小，优先级越高
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-    }
-
-    /**
-     * 自定义 FutureTask，实现 Comparable 接口，用于在 PriorityBlockingQueue 中排序。
-     */
-    public static class PriorityFutureTask<V> extends FutureTask<V> implements Comparable<PriorityFutureTask<V>> {
-        private final int priority;
-
-        public PriorityFutureTask(PriorityCallable callable) {
-            super((Callable<V>) callable);
-            this.priority = callable.getPriority();
-        }
-
-        @Override
-        public int compareTo(PriorityFutureTask<V> o) {
-            return Integer.compare(this.priority, o.priority);
-        }
-    }
-
-    /**
-     * 自定义线程池，重写 newTaskFor 方法以返回自定义的 PriorityFutureTask。
-     */
-    public static class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
-        public PriorityThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-                                          PriorityBlockingQueue<Runnable> workQueue) {
-            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
-        }
-
-        @Override
-        protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
-            if (callable instanceof PriorityCallable) {
-                return new PriorityFutureTask<>((PriorityCallable) callable);
-            }
-            return super.newTaskFor(callable);
-        }
-    }
 
     /**
      * 运行规则任务（按轮次）。

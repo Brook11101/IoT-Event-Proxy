@@ -2,9 +2,12 @@ package concurrency.experiment;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import concurrency.utils.PriorityCallable;
+import concurrency.utils.PriorityThreadPoolExecutor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -16,37 +19,13 @@ import java.util.concurrent.*;
 public class WithOutMonitor {
 
     /**
-     * 任务包装类，支持基于优先级的执行顺序
-     */
-    public static class PriorityRunnable implements Runnable, Comparable<PriorityRunnable> {
-        private final int priority;
-        private final Runnable task;
-
-        public PriorityRunnable(int priority, Runnable task) {
-            this.priority = priority;
-            this.task = task;
-        }
-
-        @Override
-        public void run() {
-            task.run();
-        }
-
-        @Override
-        public int compareTo(PriorityRunnable other) {
-            return Integer.compare(this.priority, other.priority); // 规则 ID 越小，优先级越高
-        }
-    }
-
-    /**
      * 运行并发任务
+     *
      * @param rulesFilePath 规则数据文件路径
-     * @param logFilePath 日志文件路径
+     * @param logFilePath   日志文件路径
      */
     public static void runConcurrentTasks(String rulesFilePath, String logFilePath) {
         Gson gson = new Gson();
-        ThreadPoolExecutor executorService = new ThreadPoolExecutor(
-                1, 1, 60L, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
 
         try (
                 FileReader ruleReader = new FileReader(rulesFilePath);
@@ -56,29 +35,76 @@ public class WithOutMonitor {
             // 清空日志文件内容
             logWriter.write("");
 
-            // 解析规则数据
-            List<RuleInfo> rules = gson.fromJson(ruleReader, new TypeToken<List<RuleInfo>>() {}.getType());
+            // 解析 JSON 文件，获取按轮次划分的规则
+            List<List<RuleInfo>> ruleRounds = gson.fromJson(ruleReader, new TypeToken<List<List<RuleInfo>>>() {
+            }.getType());
 
-            // 提交任务到线程池
-            for (RuleInfo rule : rules) {
-                executorService.execute(new PriorityRunnable(rule.getId(), () -> processRule(rule, logFilePath)));
+            // 按轮次执行任务
+            for (int round = 0; round < ruleRounds.size(); round++) {
+                List<RuleInfo> rules = ruleRounds.get(round);
+
+                System.out.println("开始执行第 " + (round + 1) + " 轮任务，任务数量：" + rules.size());
+
+                // 使用自定义的 PriorityThreadPoolExecutor
+                PriorityThreadPoolExecutor executorService = new PriorityThreadPoolExecutor(
+                        1, 1, 60L, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
+
+                List<Future<Thread>> futures = new ArrayList<>();
+
+                for (RuleInfo rule : rules) {
+                    PriorityCallable callableTask = new PriorityCallable(rule.getId(), () -> processRule(rule, logFilePath));
+                    Future<Thread> future = executorService.submit(callableTask);
+                    futures.add(future);
+                }
+
+                // 关闭线程池并等待所有任务执行完成
+                executorService.shutdown();
+                try {
+                    executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                // 收集所有内部线程
+                List<Thread> allThreads = new ArrayList<>();
+                for (Future<Thread> future : futures) {
+                    try {
+                        Thread threads = future.get();
+                        if (threads != null) {
+                            allThreads.add(threads);
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 等待所有内部线程结束
+                for (Thread thread : allThreads) {
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+                System.out.println("第 " + (round + 1) + " 轮任务全部完成。");
             }
+
         } catch (IOException e) {
-            System.err.println("读取规则文件或日志初始化失败: " + e.getMessage());
+            System.err.println("读取文件或执行任务失败: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            // 关闭线程池
-            executorService.shutdown();
         }
     }
 
     /**
      * 处理单个规则任务
-     * @param rule 规则信息
+     *
+     * @param rule        规则信息
      * @param logFilePath 日志文件路径
+     * @return 该规则任务内部新建的线程
      */
-    private static void processRule(RuleInfo rule, String logFilePath) {
-        new Thread(() -> {
+    private static Thread processRule(RuleInfo rule, String logFilePath) {
+        Thread taskThread = new Thread(() -> {
             try {
                 System.out.println("启动: Rule-" + rule.getId());
 
@@ -95,21 +121,25 @@ public class WithOutMonitor {
                     writer.write(logEntry);
                 }
 
-                System.out.printf("规则已执行: Rule-%d, 描述: %s, 睡眠时间: %d ms%n",
-                        rule.getId(), rule.getDescription(), sleepTime);
+                System.out.printf("规则已执行: Rule-%d, 描述: %s",
+                        rule.getId(), rule.getDescription());
             } catch (InterruptedException e) {
                 System.err.println("线程被中断: Rule-" + rule.getId());
                 Thread.currentThread().interrupt();
             } catch (IOException e) {
                 System.err.println("日志写入失败: " + e.getMessage());
             }
-        }).start(); // 启动独立线程
+        }); // 启动独立线程
+
+        taskThread.start();
 
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+
+        return taskThread;
     }
 
     public static void main(String[] args) {
